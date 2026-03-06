@@ -203,7 +203,7 @@ export default function Portfolio() {
               {dark ? "☀️" : "🌙"}
             </button>
 
-            <a href="https://huggingface.co/spaces/Naveedtechlab/portfolio/resolve/main/public/Muhammad_Naveed_CV.pdf" download
+            <a href="https://huggingface.co/datasets/Naveedtechlab/cv/resolve/main/Muhammad_Naveed_CV.pdf" download
               className="hidden sm:inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 flex-shrink-0">
               ↓ CV
             </a>
@@ -225,7 +225,7 @@ export default function Portfolio() {
                 {l}
               </button>
             ))}
-            <a href="https://huggingface.co/spaces/Naveedtechlab/portfolio/resolve/main/public/Muhammad_Naveed_CV.pdf" download
+            <a href="https://huggingface.co/datasets/Naveedtechlab/cv/resolve/main/Muhammad_Naveed_CV.pdf" download
               className="bg-amber-500 text-black text-sm font-bold px-4 py-2 rounded-full text-center">
               ↓ Download CV
             </a>
