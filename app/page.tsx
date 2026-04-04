@@ -17,6 +17,14 @@ const skills = [
 
 const projects = [
   {
+    title: "Autonomous AI Marketing Agency",
+    subtitle: "Startup · Hugging Face",
+    desc: "Fully autonomous AI marketing agency that handles campaign strategy, content generation, and client outreach — built as a live startup and deployed on Hugging Face Spaces.",
+    tags: ["Python", "AI Agents", "FastAPI", "OpenAI API", "Automation"],
+    icon: "📣", accent: "from-amber-500 to-yellow-500",
+    live: "https://naveedtechlab-autonomous-ai-marketing-agency.hf.space/",
+  },
+  {
     title: "Personal AI Employee",
     subtitle: "Digital FTE · Hackathon",
     desc: "Autonomous AI employee with Gmail/WhatsApp automation, Obsidian memory system, and MCP tools — running 24/7 without human intervention.",
@@ -128,7 +136,52 @@ const projects = [
   },
 ];
 
-const navLinks = ["About", "Skills", "Projects", "Education", "Contact"];
+const experience = [
+  {
+    icon: "🚀", title: "Founder – Autonomous AI Marketing Agency",
+    org: "NaveedTechLab · Startup", period: "2025 – Present",
+    accent: "from-amber-500 to-orange-500",
+    desc: "Built and launched a fully autonomous AI-powered marketing agency that handles campaign strategy, content generation, and client outreach — deployed live on Hugging Face Spaces.",
+    live: "https://naveedtechlab-autonomous-ai-marketing-agency.hf.space/",
+  },
+  {
+    icon: "📱", title: "Mobile Software Technician",
+    org: "Sareena Mobile Market", period: "Past Experience",
+    accent: "from-blue-500 to-cyan-500",
+    desc: "Performed mobile software flashing, firmware updates, and software recovery for a wide range of Android and feature phones in a high-volume repair environment.",
+    live: null,
+  },
+  {
+    icon: "🥽", title: "VR Experience Designer",
+    org: "Freelance / Event-Based", period: "Past Experience",
+    accent: "from-violet-500 to-purple-500",
+    desc: "Designed and set up immersive VR sitting and riding simulation experiences for events, including hardware configuration and user experience flow.",
+    live: null,
+  },
+  {
+    icon: "🎮", title: "Kinect Gaming Manager",
+    org: "Mufti Ramzan Park · Xbox 360 Kinect", period: "6 Months",
+    accent: "from-green-500 to-emerald-500",
+    desc: "Designed and managed a large-scale Kinect-based interactive gaming setup on a 12-foot screen at Mufti Ramzan Park. Handled installation, daily operations, and visitor engagement.",
+    live: null,
+  },
+  {
+    icon: "🏢", title: "Operations Manager",
+    org: "Marble Shop", period: "1 Year",
+    accent: "from-sky-500 to-blue-500",
+    desc: "Managed day-to-day operations of a marble retail business — overseeing inventory, vendor relations, staff coordination, and customer sales.",
+    live: null,
+  },
+  {
+    icon: "🔧", title: "Owner – Marble Machine Parts Workshop",
+    org: "Self-Employed Business", period: "5 Years",
+    accent: "from-rose-500 to-pink-500",
+    desc: "Ran an independent workshop manufacturing and supplying spare parts for marble cutting and polishing machinery. Managed production, client orders, and business operations end-to-end.",
+    live: null,
+  },
+];
+
+const navLinks = ["About", "Skills", "Projects", "Experience", "Education", "Contact"];
 
 /* ─── MAIN ─────────────────────────────────────────────────── */
 
@@ -407,6 +460,45 @@ export default function Portfolio() {
       </section>
 
       {/* ══════════════════════════════════
+          EXPERIENCE
+      ══════════════════════════════════ */}
+      <section id="experience" className="py-16 sm:py-24 px-4 sm:px-6 relative">
+        {dark && <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/15 to-transparent pointer-events-none" />}
+        <div className="max-w-6xl mx-auto">
+          <SectionHeader eyebrow="My journey" title="Work Experience"
+            sub="From tech repairs and event design to running my own business" dark={dark} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {experience.map((e, i) => (
+              <div key={e.title}
+                className={`border rounded-2xl p-4 sm:p-6 card-hover flex flex-col gap-3 sm:gap-4 animate-fade-up ${card}`}
+                style={{ animationDelay: `${i * 0.07}s` }}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${e.accent} rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-lg flex-shrink-0`}>
+                    {e.icon}
+                  </div>
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full text-right ${
+                    dark ? "text-slate-500 bg-white/5" : "text-slate-400 bg-slate-100"}`}>
+                    {e.period}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <h3 className={`font-bold text-sm sm:text-base mb-0.5 ${dark ? "text-white" : "text-slate-900"}`}>{e.title}</h3>
+                  <p className={`text-xs font-semibold bg-gradient-to-r ${e.accent} bg-clip-text text-transparent mb-2`}>{e.org}</p>
+                  <p className={`text-xs sm:text-sm leading-relaxed ${muted}`}>{e.desc}</p>
+                </div>
+                {e.live && (
+                  <a href={e.live} target="_blank" rel="noopener noreferrer"
+                    className={`flex items-center justify-center gap-2 bg-gradient-to-r ${e.accent} text-white text-xs font-bold py-2 px-4 rounded-xl hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-md`}>
+                    🚀 Live Demo
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════
           EDUCATION
       ══════════════════════════════════ */}
       <section id="education" className="py-16 sm:py-24 px-4 sm:px-6">
@@ -419,6 +511,16 @@ export default function Portfolio() {
                 icon: "🎓", degree: "Governor House Initiative", field: "GenAI, Web3 & Metaverse",
                 year: "2023 – Present", accent: "from-amber-500 to-orange-500",
                 desc: "Intensive government-backed program covering Generative AI, Web3 technologies, Metaverse development, and modern engineering practices.",
+              },
+              {
+                icon: "💻", degree: "DCIT – Diploma in Computer IT", field: "Diploma in Computer Information Technology",
+                year: "Completed", accent: "from-violet-500 to-purple-500",
+                desc: "Comprehensive diploma covering computer fundamentals, software applications, networking basics, and information technology principles.",
+              },
+              {
+                icon: "🖥️", degree: "CIT – Certificate in IT", field: "Certificate in Information Technology",
+                year: "Completed", accent: "from-green-500 to-emerald-500",
+                desc: "Foundational certificate program in computer operations, office software, and basic IT skills.",
               },
               {
                 icon: "📚", degree: "Crescent Grammar School", field: "Matriculation",
