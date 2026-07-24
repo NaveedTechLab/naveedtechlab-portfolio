@@ -5,9 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Muhammad Naveed | AI Automation Engineer",
+  title: "Muhammad Naveed | Forward-Deployed AI Automation Engineer",
   description:
-    "Portfolio of Muhammad Naveed – AI Automation Engineer, Full Stack Developer & Agent Systems Builder based in Karachi, Pakistan.",
+    "Portfolio of Muhammad Naveed – Forward-Deployed AI Automation Engineer & Full Stack Developer building and operating production Slack/Google automation systems for a U.S. enterprise client. Based in Karachi, Pakistan.",
 };
 
 export default function RootLayout({

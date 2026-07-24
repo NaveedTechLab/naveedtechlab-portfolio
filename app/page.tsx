@@ -2,23 +2,38 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import ChatBot from "./components/ChatBot";
 
 /* ─── DATA ─────────────────────────────────────────────────── */
 
 const skills = [
+  { label: "Backend & Runtime", color: "from-violet-500 to-purple-400", tags: ["Node.js", "Python", "FastAPI", "Express", "node-cron", "REST APIs"] },
   { label: "Frontend",     color: "from-blue-500 to-cyan-400",    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "HTML5/CSS3"] },
-  { label: "Backend",      color: "from-violet-500 to-purple-400", tags: ["Python", "FastAPI", "Node.js", "REST APIs", "Authentication"] },
-  { label: "AI & Agents",  color: "from-amber-500 to-orange-400", tags: ["OpenAI API", "Gemini API", "LangChain", "Claude Code", "Agents SDK", "MCP"] },
-  { label: "Automation",   color: "from-green-500 to-emerald-400", tags: ["Gmail API", "WhatsApp/Twilio", "Webhooks", "Watchers", "BG Workers"] },
-  { label: "Cloud & DevOps", color: "from-sky-500 to-blue-400",   tags: ["Docker", "Kubernetes", "Kafka", "Dapr", "CI/CD", "GitHub"] },
+  { label: "AI & LLM",     color: "from-amber-500 to-orange-400", tags: ["OpenAI API", "Anthropic API (Claude)", "Gemini API", "LangChain", "OpenRouter", "Agents SDK", "MCP"] },
+  { label: "Integrations", color: "from-green-500 to-emerald-400", tags: ["Slack Bot & Events API", "Google Sheets", "Google Calendar", "Gmail API", "Webhooks", "WhatsApp", "Twilio"] },
+  { label: "Cloud & DevOps", color: "from-sky-500 to-blue-400",   tags: ["Railway", "Docker", "Kubernetes", "Kafka", "Dapr", "CI/CD", "GitHub"] },
   { label: "Database",     color: "from-rose-500 to-pink-400",    tags: ["MongoDB", "PostgreSQL", "Sanity CMS"] },
-  { label: "Architecture", color: "from-teal-500 to-cyan-400",    tags: ["Spec-Driven Dev", "Event-Driven", "Agent Skills Design"] },
+  { label: "Architecture", color: "from-teal-500 to-cyan-400",    tags: ["Event-Driven", "Spec-Driven", "Fuzzy Matching / Alias Resolution", "BG Precompute & Caching", "Rate-Limit-Safe Pipelines"] },
 ];
 
 const projects = [
   {
+    title: "Slack/Google Automation Suite",
+    subtitle: "Production · Heat Wave Pest Control",
+    desc: "Five interconnected production automation systems for a U.S. multi-region pest-control operation: a Specialty Form Compliance Bot (token-based property matching with Levenshtein fuzzy matching + alias layer across 123 properties), a real-time Notes Verification Bot with 15-min escalation, an automated Weekly Reporting Suite, and a Specialty Recommendation engine with tier-aware pricing.",
+    tags: ["Node.js", "Slack API", "Google Sheets", "OpenRouter", "Railway"],
+    icon: "🛰️", accent: "from-amber-500 to-orange-500", live: null,
+  },
+  {
+    title: "Live Operations Dashboard",
+    subtitle: "Production · Web App",
+    desc: "Password-protected ops dashboard (Express + vanilla JS) with six live sections — Overview, Route Timing, Units Allocation, Notes Bot Activity, Recommendations Tracking & Monthly Per-Technician Reporting. Slack-history route-timing engine, background precompute + snapshot caching (cut load from 60–90s timeouts to instant), and one-click CSV export.",
+    tags: ["Express", "JavaScript", "Slack API", "BG Precompute", "Caching"],
+    icon: "📊", accent: "from-sky-500 to-blue-500", live: null,
+  },
+  {
     title: "Autonomous AI Marketing Agency",
-    subtitle: "Startup · Hugging Face",
+    subtitle: "Hackathon 2024 · Hugging Face",
     desc: "Fully autonomous AI marketing agency that handles campaign strategy, content generation, and client outreach — built as a live startup and deployed on Hugging Face Spaces.",
     tags: ["Python", "AI Agents", "FastAPI", "OpenAI API", "Automation"],
     icon: "📣", accent: "from-amber-500 to-yellow-500",
@@ -26,7 +41,7 @@ const projects = [
   },
   {
     title: "Personal AI Employee",
-    subtitle: "Digital FTE · Hackathon",
+    subtitle: "Hackathon 2024 · Digital FTE",
     desc: "Autonomous AI employee with Gmail/WhatsApp automation, Obsidian memory system, and MCP tools — running 24/7 without human intervention.",
     tags: ["OpenAI SDK", "MCP", "Gmail API", "WhatsApp", "Python"],
     icon: "🤖", accent: "from-amber-500 to-orange-500", live: null,
@@ -138,11 +153,25 @@ const projects = [
 
 const experience = [
   {
-    icon: "🚀", title: "Founder – Autonomous AI Marketing Agency",
-    org: "NaveedTechLab · Startup", period: "2025 – Present",
+    icon: "🛰️", title: "AI Automation Engineer (Forward-Deployed)",
+    org: "Activus Capital Partners — Heat Wave Pest Control", period: "Apr 2026 – Present",
     accent: "from-amber-500 to-orange-500",
-    desc: "Built and launched a fully autonomous AI-powered marketing agency that handles campaign strategy, content generation, and client outreach — deployed live on Hugging Face Spaces.",
-    live: "https://naveedtechlab-autonomous-ai-marketing-agency.hf.space/",
+    desc: "Own and operate five production Slack/Google Workspace automation systems plus a live operations dashboard for a U.S. multi-region pest-control company — supporting 8+ field technicians across 123 properties. Compliance bots, notes verification, weekly reporting, a recommendation engine, and a route-timing dashboard, with daily production monitoring, root-cause debugging, and same-day fixes. Report directly to the Managing Partner, Operations Coordinator & Director.",
+    live: null,
+  },
+  {
+    icon: "🏢", title: "Founder & Lead Developer",
+    org: "NaveedTechLab · Digital Agency", period: "2025 – Present",
+    accent: "from-violet-500 to-purple-500",
+    desc: "Built a digital agency targeting local Karachi businesses — secured first two clients (CCTV World Karachi & Ha-Aeen Dentistry). Produced 6-month digital transformation roadmaps, partner agreements, and pricing strategy; delivered digital footprint setup, customer-acquisition systems, and workflow automation.",
+    live: null,
+  },
+  {
+    icon: "💻", title: "Freelance Full Stack Developer",
+    org: "Fiverr & Direct Clients · Remote", period: "2023 – Present",
+    accent: "from-blue-500 to-cyan-500",
+    desc: "Delivered Shopify stores, business websites, custom dashboards, CMS-based sites, and automation workflows end-to-end — from requirements through design, development, and deployment.",
+    live: null,
   },
   {
     icon: "📱", title: "Mobile Software Technician",
@@ -256,7 +285,7 @@ export default function Portfolio() {
               {dark ? "☀️" : "🌙"}
             </button>
 
-            <a href="https://huggingface.co/datasets/Naveedtechlab/cv/resolve/main/Muhammad_Naveed_CV.pdf" download
+            <a href="/Muhammad_Naveed_CV.pdf" download
               className="hidden sm:inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 flex-shrink-0">
               ↓ CV
             </a>
@@ -278,7 +307,7 @@ export default function Portfolio() {
                 {l}
               </button>
             ))}
-            <a href="https://huggingface.co/datasets/Naveedtechlab/cv/resolve/main/Muhammad_Naveed_CV.pdf" download
+            <a href="/Muhammad_Naveed_CV.pdf" download
               className="bg-amber-500 text-black text-sm font-bold px-4 py-2 rounded-full text-center">
               ↓ Download CV
             </a>
@@ -314,9 +343,9 @@ export default function Portfolio() {
             </h1>
 
             <p className={`${muted} text-sm sm:text-base lg:text-lg leading-relaxed mb-7 max-w-lg mx-auto md:mx-0`}>
-              <span className={`${txt} font-semibold`}>AI Automation Engineer</span> &amp;{" "}
-              <span className={`${txt} font-semibold`}>Full Stack Developer</span> building autonomous{" "}
-              <span className="text-amber-400 font-semibold">Digital FTE</span> systems and cloud-native apps — from Karachi, Pakistan.
+              <span className={`${txt} font-semibold`}>Forward-Deployed AI Automation Engineer</span> &amp;{" "}
+              <span className={`${txt} font-semibold`}>Full Stack Developer</span> — building &amp; operating{" "}
+              <span className="text-amber-400 font-semibold">production automation systems</span> for a U.S. enterprise client, from Karachi, Pakistan.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
@@ -364,7 +393,7 @@ export default function Portfolio() {
               </div>
               <div className={`absolute -bottom-1 -left-3 sm:-bottom-2 sm:-left-4 border rounded-2xl px-2.5 py-1.5 text-xs font-bold text-cyan-400 shadow-xl animate-fade-up delay-500 ${
                 dark ? "bg-white/5 backdrop-blur-lg border-white/10" : "bg-white border-slate-200"}`}>
-                ⚡ 5+ AI Systems
+                ⚡ 5 Production Systems
               </div>
             </div>
           </div>
@@ -466,7 +495,7 @@ export default function Portfolio() {
         {dark && <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/15 to-transparent pointer-events-none" />}
         <div className="max-w-6xl mx-auto">
           <SectionHeader eyebrow="My journey" title="Work Experience"
-            sub="From tech repairs and event design to running my own business" dark={dark} />
+            sub="From forward-deployed AI automation for a U.S. enterprise to founding my own agency" dark={dark} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {experience.map((e, i) => (
               <div key={e.title}
@@ -603,6 +632,9 @@ export default function Portfolio() {
           © 2026 <span className="text-amber-400 font-semibold">Muhammad Naveed</span> · Built with Next.js & Tailwind CSS
         </p>
       </footer>
+
+      {/* AI CHATBOT */}
+      <ChatBot dark={dark} />
     </div>
   );
 }
