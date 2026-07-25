@@ -3,13 +3,14 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import ChatBot from "./components/ChatBot";
+import WhatsApp from "./components/WhatsApp";
 
 /* ─── DATA ─────────────────────────────────────────────────── */
 
 const skills = [
   { label: "Backend & Runtime", color: "from-violet-500 to-purple-400", tags: ["Node.js", "Python", "FastAPI", "Express", "node-cron", "REST APIs"] },
   { label: "Frontend",     color: "from-blue-500 to-cyan-400",    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "HTML5/CSS3"] },
-  { label: "AI & LLM",     color: "from-amber-500 to-orange-400", tags: ["OpenAI API", "Anthropic API (Claude)", "Gemini API", "LangChain", "OpenRouter", "Agents SDK", "MCP"] },
+  { label: "AI & LLM",     color: "from-lime-500 to-green-400", tags: ["OpenAI API", "Anthropic API (Claude)", "Gemini API", "LangChain", "OpenRouter", "Agents SDK", "MCP"] },
   { label: "Integrations", color: "from-green-500 to-emerald-400", tags: ["Slack Bot & Events API", "Google Sheets", "Google Calendar", "Gmail API", "Webhooks", "WhatsApp", "Twilio"] },
   { label: "Cloud & DevOps", color: "from-sky-500 to-blue-400",   tags: ["Railway", "Docker", "Kubernetes", "Kafka", "Dapr", "CI/CD", "GitHub"] },
   { label: "Database",     color: "from-rose-500 to-pink-400",    tags: ["MongoDB", "PostgreSQL", "Sanity CMS"] },
@@ -22,7 +23,7 @@ const projects = [
     subtitle: "Production · Heat Wave Pest Control",
     desc: "Five interconnected production automation systems for a U.S. multi-region pest-control operation: a Specialty Form Compliance Bot (token-based property matching with Levenshtein fuzzy matching + alias layer across 123 properties), a real-time Notes Verification Bot with 15-min escalation, an automated Weekly Reporting Suite, and a Specialty Recommendation engine with tier-aware pricing.",
     tags: ["Node.js", "Slack API", "Google Sheets", "OpenRouter", "Railway"],
-    icon: "🛰️", accent: "from-amber-500 to-orange-500", live: null,
+    icon: "🛰️", accent: "from-lime-500 to-green-500", live: null,
   },
   {
     title: "Live Operations Dashboard",
@@ -36,7 +37,7 @@ const projects = [
     subtitle: "Hackathon 2024 · Hugging Face",
     desc: "Fully autonomous AI marketing agency that handles campaign strategy, content generation, and client outreach — built as a live startup and deployed on Hugging Face Spaces.",
     tags: ["Python", "AI Agents", "FastAPI", "OpenAI API", "Automation"],
-    icon: "📣", accent: "from-amber-500 to-yellow-500",
+    icon: "📣", accent: "from-lime-500 to-yellow-500",
     live: "https://naveedtechlab-autonomous-ai-marketing-agency.hf.space/",
   },
   {
@@ -44,7 +45,7 @@ const projects = [
     subtitle: "Hackathon 2024 · Digital FTE",
     desc: "Autonomous AI employee with Gmail/WhatsApp automation, Obsidian memory system, and MCP tools — running 24/7 without human intervention.",
     tags: ["OpenAI SDK", "MCP", "Gmail API", "WhatsApp", "Python"],
-    icon: "🤖", accent: "from-amber-500 to-orange-500", live: null,
+    icon: "🤖", accent: "from-lime-500 to-green-500", live: null,
   },
   {
     title: "CRM Digital FTE",
@@ -99,7 +100,7 @@ const projects = [
     subtitle: "Utility App · Streamlit",
     desc: "Smart library management system to add, search, and manage books with an intuitive Streamlit interface and persistent data storage.",
     tags: ["Python", "Streamlit", "Pandas"],
-    icon: "📕", accent: "from-orange-500 to-amber-500",
+    icon: "📕", accent: "from-green-500 to-lime-500",
     live: "https://naveed247365-library-manager-library-manager-iykdx8.streamlit.app/",
   },
   {
@@ -147,7 +148,7 @@ const projects = [
     subtitle: "Freelance · Client Projects",
     desc: "Shopify stores, custom dashboards, CMS-based websites, and automation workflows for clients — from design to deployment.",
     tags: ["Shopify", "React", "Sanity CMS", "Node.js"],
-    icon: "💼", accent: "from-yellow-500 to-orange-400", live: null,
+    icon: "💼", accent: "from-yellow-500 to-green-400", live: null,
   },
 ];
 
@@ -155,7 +156,7 @@ const experience = [
   {
     icon: "🛰️", title: "AI Automation Engineer (Forward-Deployed)",
     org: "Activus Capital Partners — Heat Wave Pest Control", period: "Apr 2026 – Present",
-    accent: "from-amber-500 to-orange-500",
+    accent: "from-lime-500 to-green-500",
     desc: "Own and operate five production Slack/Google Workspace automation systems plus a live operations dashboard for a U.S. multi-region pest-control company — supporting 8+ field technicians across 123 properties. Compliance bots, notes verification, weekly reporting, a recommendation engine, and a route-timing dashboard, with daily production monitoring, root-cause debugging, and same-day fixes. Report directly to the Managing Partner, Operations Coordinator & Director.",
     live: null,
   },
@@ -243,13 +244,13 @@ export default function Portfolio() {
   };
 
   /* ── theme tokens ── */
-  const bg      = dark ? "bg-[#060d1f]"   : "bg-slate-50";
-  const surface = dark ? "bg-[#0d1b38]"   : "bg-white";
+  const bg      = dark ? "bg-[#0a0a0a]"   : "bg-slate-50";
+  const surface = dark ? "bg-[#111111]"   : "bg-white";
   const card    = dark ? "bg-white/5 border-white/8"  : "bg-white border-slate-200";
   const txt     = dark ? "text-white"      : "text-slate-900";
   const muted   = dark ? "text-slate-400"  : "text-slate-500";
   const navBg   = scrolled
-    ? dark ? "bg-[#060d1f]/90 backdrop-blur-xl shadow-2xl shadow-black/40 border-b border-white/5"
+    ? dark ? "bg-[#0a0a0a]/90 backdrop-blur-xl shadow-2xl shadow-black/40 border-b border-white/5"
            : "bg-white/90 backdrop-blur-xl shadow-lg border-b border-slate-200"
     : "bg-transparent";
 
@@ -259,7 +260,7 @@ export default function Portfolio() {
       {/* ── NAVBAR ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
-          <span className="text-amber-400 font-bold text-lg tracking-wider flex-shrink-0">MN<span className={txt}>.</span></span>
+          <span className="text-lime-400 font-bold text-lg tracking-wider flex-shrink-0">MN<span className={txt}>.</span></span>
 
           {/* Desktop nav */}
           <ul className="hidden md:flex gap-6 lg:gap-8">
@@ -267,7 +268,7 @@ export default function Portfolio() {
               <li key={l}>
                 <button onClick={() => scrollTo(l)}
                   className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
-                    active === l ? "text-amber-400" : `${muted} hover:${txt}`}`}>
+                    active === l ? "text-lime-400" : `${muted} hover:${txt}`}`}>
                   {l}
                 </button>
               </li>
@@ -286,7 +287,7 @@ export default function Portfolio() {
             </button>
 
             <a href="/Muhammad_Naveed_CV.pdf" download
-              className="hidden sm:inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 flex-shrink-0">
+              className="hidden sm:inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-400 text-black text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 flex-shrink-0">
               ↓ CV
             </a>
 
@@ -300,15 +301,15 @@ export default function Portfolio() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className={`md:hidden border-t px-6 py-4 flex flex-col gap-4 ${
-            dark ? "bg-[#0d1b38] border-white/10" : "bg-white border-slate-200"}`}>
+            dark ? "bg-[#111111] border-white/10" : "bg-white border-slate-200"}`}>
             {navLinks.map((l) => (
               <button key={l} onClick={() => scrollTo(l)}
-                className={`text-left text-sm font-medium transition-colors ${muted} hover:text-amber-400`}>
+                className={`text-left text-sm font-medium transition-colors ${muted} hover:text-lime-400`}>
                 {l}
               </button>
             ))}
             <a href="/Muhammad_Naveed_CV.pdf" download
-              className="bg-amber-500 text-black text-sm font-bold px-4 py-2 rounded-full text-center">
+              className="bg-lime-500 text-black text-sm font-bold px-4 py-2 rounded-full text-center">
               ↓ Download CV
             </a>
           </div>
@@ -321,19 +322,36 @@ export default function Portfolio() {
       <section id="about" className="min-h-screen flex items-center justify-center relative pt-20 pb-12 px-4 sm:px-6 overflow-hidden">
         {/* blobs */}
         <div className="absolute top-20 left-0 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 right-0 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 right-0 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-lime-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
 
           {/* Text */}
           <div className="animate-fade-left order-2 md:order-1 text-center md:text-left">
-            <span className="inline-block bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5">
-              Available for Work
+            {/* Terminal window */}
+            <div className={`inline-block text-left rounded-xl border font-mono text-xs mb-5 overflow-hidden shadow-xl ${
+              dark ? "bg-black/60 border-white/10" : "bg-slate-900 border-slate-700"}`}>
+              <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                <span className="ml-2 text-slate-400 text-[10px]">naveedtechlab ~ portfolio</span>
+              </div>
+              <div className="px-3.5 py-2.5">
+                <span className="text-slate-500">$ </span>
+                <span className="text-lime-400">claude code</span>
+                <span className="text-slate-300"> --deploy --spec-first</span>
+                <span className="text-lime-400 animate-blink">█</span>
+              </div>
+            </div>
+
+            <span className="flex items-center gap-2 justify-center md:justify-start bg-lime-500/15 border border-lime-500/30 text-lime-400 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5 w-fit mx-auto md:mx-0">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" /> Available for Work
             </span>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-4">
               Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent animate-gradient">
+              <span className="bg-gradient-to-r from-lime-400 via-green-400 to-lime-300 bg-clip-text text-transparent animate-gradient">
                 Muhammad
               </span>
               <br />
@@ -345,17 +363,17 @@ export default function Portfolio() {
             <p className={`${muted} text-sm sm:text-base lg:text-lg leading-relaxed mb-7 max-w-lg mx-auto md:mx-0`}>
               <span className={`${txt} font-semibold`}>Forward-Deployed AI Automation Engineer</span> &amp;{" "}
               <span className={`${txt} font-semibold`}>Full Stack Developer</span> — building &amp; operating{" "}
-              <span className="text-amber-400 font-semibold">production automation systems</span> for a U.S. enterprise client, from Karachi, Pakistan.
+              <span className="text-lime-400 font-semibold">production automation systems</span> for a U.S. enterprise client, from Karachi, Pakistan.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
               <button onClick={() => scrollTo("Projects")}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-amber-500/25 text-sm sm:text-base">
+                className="bg-gradient-to-r from-lime-500 to-green-500 hover:from-lime-400 hover:to-green-400 text-black font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-lime-500/25 text-sm sm:text-base">
                 View Projects →
               </button>
               <button onClick={() => scrollTo("Contact")}
                 className={`border font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 text-sm sm:text-base ${
-                  dark ? "border-white/20 hover:border-amber-400/50 text-white" : "border-slate-300 hover:border-amber-400 text-slate-700"}`}>
+                  dark ? "border-white/20 hover:border-lime-400/50 text-white" : "border-slate-300 hover:border-lime-400 text-slate-700"}`}>
                 Contact Me
               </button>
             </div>
@@ -363,6 +381,7 @@ export default function Portfolio() {
             {/* Socials */}
             <div className="flex gap-2 flex-wrap justify-center md:justify-start">
               {[
+                { label: "WhatsApp",  href: "https://wa.me/923003627458",               icon: "🟢" },
                 { label: "GitHub",    href: "https://github.com/naveedtechlab",        icon: "⌨️" },
                 { label: "LinkedIn",  href: "https://linkedin.com/in/naveedtechlab",    icon: "💼" },
                 { label: "YouTube",   href: "https://youtube.com/@naveedtechlab",       icon: "▶️" },
@@ -371,10 +390,25 @@ export default function Portfolio() {
                 { label: "Facebook",  href: "https://facebook.com/naveedtechlab",       icon: "📘" },
               ].map((s) => (
                 <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                  className={`border text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 hover:text-amber-400 hover:border-amber-400/40 ${
+                  className={`border text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 hover:text-lime-400 hover:border-lime-400/40 ${
                     dark ? "border-white/10 text-slate-300" : "border-slate-200 text-slate-600"}`}>
                   <span>{s.icon}</span>{s.label}
                 </a>
+              ))}
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-8 max-w-md mx-auto md:mx-0">
+              {[
+                { n: "5", l: "Production Systems" },
+                { n: "123", l: "Properties Served" },
+                { n: "15+", l: "Projects Shipped" },
+              ].map((st) => (
+                <div key={st.l} className={`rounded-xl border px-2 py-3 text-center ${
+                  dark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"}`}>
+                  <div className="font-mono text-xl sm:text-2xl font-extrabold text-lime-400">{st.n}</div>
+                  <div className={`text-[10px] sm:text-xs mt-0.5 leading-tight ${muted}`}>{st.l}</div>
+                </div>
               ))}
             </div>
           </div>
@@ -382,12 +416,12 @@ export default function Portfolio() {
           {/* Photo */}
           <div className="flex justify-center animate-fade-right order-1 md:order-2">
             <div className="relative">
-              <div className="absolute -inset-3 sm:-inset-4 rounded-full border-2 border-dashed border-amber-400/30 animate-spin-slow" />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400/20 to-blue-600/20 blur-2xl animate-pulse" />
-              <div className="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-amber-400 animate-pulse-ring animate-float shadow-2xl shadow-amber-500/20">
+              <div className="absolute -inset-3 sm:-inset-4 rounded-full border-2 border-dashed border-lime-400/30 animate-spin-slow" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-400/20 to-blue-600/20 blur-2xl animate-pulse" />
+              <div className="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-lime-400 animate-pulse-ring animate-float shadow-2xl shadow-lime-500/20">
                 <Image src="/profile.jpg" alt="Muhammad Naveed" fill className="object-cover object-top" priority />
               </div>
-              <div className={`absolute -top-1 -right-3 sm:-top-2 sm:-right-4 border rounded-2xl px-2.5 py-1.5 text-xs font-bold text-amber-400 shadow-xl animate-fade-up delay-300 ${
+              <div className={`absolute -top-1 -right-3 sm:-top-2 sm:-right-4 border rounded-2xl px-2.5 py-1.5 text-xs font-bold text-lime-400 shadow-xl animate-fade-up delay-300 ${
                 dark ? "bg-white/5 backdrop-blur-lg border-white/10" : "bg-white border-slate-200"}`}>
                 🤖 AI Engineer
               </div>
@@ -424,7 +458,7 @@ export default function Portfolio() {
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {s.tags.map((t) => (
                     <span key={t}
-                      className={`text-xs px-2.5 sm:px-3 py-1 rounded-full border transition-colors duration-200 cursor-default hover:text-amber-400 hover:border-amber-400/40 ${
+                      className={`text-xs px-2.5 sm:px-3 py-1 rounded-full border transition-colors duration-200 cursor-default hover:text-lime-400 hover:border-lime-400/40 ${
                         dark ? "bg-white/5 border-white/10 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-600"}`}>
                       {t}
                     </span>
@@ -442,7 +476,7 @@ export default function Portfolio() {
       <section id="projects" className="py-16 sm:py-24 px-4 sm:px-6 relative">
         {dark && <>
           <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/8 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-lime-500/8 rounded-full blur-3xl pointer-events-none" />
         </>}
         <div className="max-w-6xl mx-auto">
           <SectionHeader eyebrow="What I've built" title="Projects & Experience"
@@ -538,7 +572,7 @@ export default function Portfolio() {
             {[
               {
                 icon: "🎓", degree: "Governor House Initiative", field: "GenAI, Web3 & Metaverse",
-                year: "2023 – Present", accent: "from-amber-500 to-orange-500",
+                year: "2023 – Present", accent: "from-lime-500 to-green-500",
                 desc: "Intensive government-backed program covering Generative AI, Web3 technologies, Metaverse development, and modern engineering practices.",
               },
               {
@@ -566,7 +600,7 @@ export default function Portfolio() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between flex-wrap gap-2 mb-1">
                     <h3 className={`font-bold text-sm sm:text-base ${txt}`}>{e.degree}</h3>
-                    <span className="text-xs text-amber-400 font-semibold bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full flex-shrink-0">
+                    <span className="text-xs text-lime-400 font-semibold bg-lime-500/10 border border-lime-500/20 px-2.5 py-0.5 rounded-full flex-shrink-0">
                       {e.year}
                     </span>
                   </div>
@@ -590,13 +624,16 @@ export default function Portfolio() {
           <div className="max-w-2xl mx-auto">
             <div className={`border rounded-3xl p-6 sm:p-8 md:p-12 text-center animate-fade-up ${card}`}>
               <p className={`text-sm sm:text-base leading-relaxed mb-8 sm:mb-10 max-w-lg mx-auto ${muted}`}>
-                Whether you need an <span className="text-amber-400 font-semibold">AI automation system</span>,
+                Whether you need an <span className="text-lime-400 font-semibold">AI automation system</span>,
                 a full-stack web app, or a custom agent — I&apos;m ready to build it.
+                <br className="hidden sm:block" />
+                <span className="text-xs font-mono text-lime-400/80">// for Pakistan / UAE — WhatsApp preferred ⚡</span>
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
                 {[
                   { icon: "✉️", label: "Email",     value: "qureshinaveed21@hotmail.com",        href: "mailto:qureshinaveed21@hotmail.com" },
+                  { icon: "🟢", label: "WhatsApp",  value: "+92 300 3627458",                    href: "https://wa.me/923003627458" },
                   { icon: "⌨️", label: "GitHub",    value: "naveedtechlab",                      href: "https://github.com/naveedtechlab" },
                   { icon: "💼", label: "LinkedIn",  value: "naveedtechlab",                      href: "https://linkedin.com/in/naveedtechlab" },
                   { icon: "▶️", label: "YouTube",   value: "@naveedtechlab",                     href: "https://youtube.com/@naveedtechlab" },
@@ -606,11 +643,11 @@ export default function Portfolio() {
                   { icon: "📍", label: "Location",  value: "Karachi, Pakistan",                  href: "#" },
                 ].map((c) => (
                   <a key={c.label} href={c.href} target="_blank" rel="noopener noreferrer"
-                    className={`border rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-105 group hover:border-amber-400/40 ${
-                      dark ? "border-white/10 hover:bg-white/5" : "border-slate-200 hover:bg-amber-50"}`}>
+                    className={`border rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-105 group hover:border-lime-400/40 ${
+                      dark ? "border-white/10 hover:bg-white/5" : "border-slate-200 hover:bg-lime-50"}`}>
                     <span className="text-xl sm:text-2xl">{c.icon}</span>
                     <span className={`text-xs uppercase tracking-widest ${muted}`}>{c.label}</span>
-                    <span className={`text-xs font-medium group-hover:text-amber-400 transition-colors text-center break-all leading-tight ${txt}`}>
+                    <span className={`text-xs font-medium group-hover:text-lime-400 transition-colors text-center break-all leading-tight ${txt}`}>
                       {c.value}
                     </span>
                   </a>
@@ -618,7 +655,7 @@ export default function Portfolio() {
               </div>
 
               <a href="mailto:qureshinaveed21@hotmail.com"
-                className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-200 hover:scale-105 shadow-xl shadow-amber-500/25 text-sm sm:text-base">
+                className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-lime-500 to-green-500 hover:from-lime-400 hover:to-green-400 text-black font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-200 hover:scale-105 shadow-xl shadow-lime-500/25 text-sm sm:text-base">
                 ✉️ Send Me an Email
               </a>
             </div>
@@ -628,13 +665,15 @@ export default function Portfolio() {
 
       {/* FOOTER */}
       <footer className={`border-t py-6 sm:py-8 px-4 sm:px-6 text-center ${dark ? "border-white/5" : "border-slate-200"}`}>
-        <p className={`text-xs sm:text-sm ${muted}`}>
-          © 2026 <span className="text-amber-400 font-semibold">Muhammad Naveed</span> · Built with Next.js & Tailwind CSS
+        <p className={`text-xs sm:text-sm font-mono ${muted}`}>
+          <span className="text-lime-500/60">$ </span>
+          © 2026 <span className="text-lime-400 font-semibold">Muhammad Naveed</span> · built with Next.js &amp; Tailwind CSS
         </p>
       </footer>
 
-      {/* AI CHATBOT */}
+      {/* FLOATING BUTTONS */}
       <ChatBot dark={dark} />
+      <WhatsApp />
     </div>
   );
 }
@@ -645,13 +684,15 @@ function SectionHeader({ eyebrow, title, sub, dark }: {
 }) {
   return (
     <div className="text-center mb-10 sm:mb-14 animate-fade-up">
-      <span className="inline-block text-amber-400 text-xs font-bold tracking-widest uppercase bg-amber-500/10 border border-amber-500/20 px-4 py-1.5 rounded-full mb-3 sm:mb-4">
-        {eyebrow}
+      <span className="inline-block font-mono text-lime-400 text-sm mb-3">
+        <span className="text-slate-500">// </span>{title.toLowerCase().replace(/\s+/g, "-")}
       </span>
       <h2 className={`text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 sm:mb-3 ${dark ? "text-white" : "text-slate-900"}`}>
         {title}
       </h2>
-      <p className={`text-sm sm:text-base max-w-xl mx-auto ${dark ? "text-slate-400" : "text-slate-500"}`}>{sub}</p>
+      <p className={`text-sm sm:text-base max-w-xl mx-auto font-mono ${dark ? "text-slate-500" : "text-slate-500"}`}>
+        <span className="text-lime-500/60">{"> "}</span>{sub}
+      </p>
     </div>
   );
 }
