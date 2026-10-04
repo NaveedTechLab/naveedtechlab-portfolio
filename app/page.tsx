@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import ChatBot from "./components/ChatBot";
 import WhatsApp from "./components/WhatsApp";
 import { projects as allProjects, experience, skills } from "./lib/portfolio-data";
@@ -33,117 +33,11 @@ const links = ["About", "Expertise", "Projects", "Skills Library", "Experience",
 function Arrow() { return <span aria-hidden="true">↗</span>; }
 
 
-type Point3 = { x: number; y: number; z: number };
-function AgentUniverse() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let width = 600, height = 560, frame = 0, visible = true, time = 0;
-    let targetX = 0, targetY = 0, cameraX = 0, cameraY = 0;
-    const points: Point3[] = Array.from({ length: 460 }, (_, i) => {
-      const y = 1 - (i / 459) * 2;
-      const radius = Math.sqrt(1 - y * y);
-      const angle = Math.PI * (3 - Math.sqrt(5)) * i;
-      return { x: Math.cos(angle) * radius * 118, y: y * 118, z: Math.sin(angle) * radius * 118 };
-    });
-    const stars = Array.from({ length: 55 }, (_, i) => ({ x: ((i * 73 + 19) % 997) / 997, y: ((i * 139 + 71) % 991) / 991, radius: i % 3 === 0 ? 1.4 : .65 }));
-    const resize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      width = bounds.width; height = bounds.height;
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-    const observer = new ResizeObserver(resize); observer.observe(canvas);
-    const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }); intersection.observe(canvas);
-    const pointer = (event: PointerEvent) => {
-      const bounds = canvas.getBoundingClientRect();
-      targetX = ((event.clientX - bounds.left) / bounds.width - .5) * .65;
-      targetY = ((event.clientY - bounds.top) / bounds.height - .5) * .45;
-    };
-    const reset = () => { targetX = 0; targetY = 0; };
-    canvas.addEventListener("pointermove", pointer); canvas.addEventListener("pointerleave", reset);
-    const draw = () => {
-      if (!visible || document.hidden) { frame = requestAnimationFrame(draw); return; }
-      if (!reducedMotion.matches) time += .004;
-      cameraX += (targetX - cameraX) * .045; cameraY += (targetY - cameraY) * .045;
-      context.clearRect(0, 0, width, height);
-      const size = Math.min(width / 530, height / 530);
-      const cx = width * .5, cy = height * .46;
-      const project = (point: Point3) => {
-        const angle = time + cameraX;
-        const x = point.x * Math.cos(angle) + point.z * Math.sin(angle);
-        const z = -point.x * Math.sin(angle) + point.z * Math.cos(angle);
-        const y = point.y * Math.cos(cameraY + .2) - z * Math.sin(cameraY + .2);
-        const depth = point.y * Math.sin(cameraY + .2) + z * Math.cos(cameraY + .2);
-        const perspective = 500 / (500 + depth);
-        return { x: cx + x * perspective * size, y: cy + y * perspective * size, depth, scale: perspective };
-      };
-      for (const star of stars) {
-        context.fillStyle = "rgba(170,219,224,.35)"; context.beginPath(); context.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2); context.fill();
-      }
-      const halo = context.createRadialGradient(cx, cy, 20, cx, cy, 235 * size);
-      halo.addColorStop(0, "rgba(84,218,209,.22)"); halo.addColorStop(.45, "rgba(65,100,209,.12)"); halo.addColorStop(1, "rgba(4,13,22,0)");
-      context.fillStyle = halo; context.fillRect(0, 0, width, height);
-      for (let ring = 0; ring < 3; ring++) {
-        context.beginPath();
-        for (let i = 0; i <= 150; i++) {
-          const a = i / 150 * Math.PI * 2, r = 175 + ring * 23;
-          const p = project({ x: Math.cos(a) * r, y: Math.sin(a) * r * Math.cos(.7 + ring * .7), z: Math.sin(a) * r * Math.sin(.7 + ring * .7) });
-          if (i === 0) context.moveTo(p.x,p.y); else context.lineTo(p.x,p.y);
-        }
-        context.strokeStyle = ring === 1 ? "rgba(159,135,255,.35)" : "rgba(125,235,224,.26)"; context.lineWidth = 1; context.stroke();
-      }
-      const projected = points.map(project);
-      for (let i = 0; i < projected.length; i++) {
-        const p = projected[i];
-        for (const offset of [13,21]) {
-          const q = projected[(i + offset) % projected.length];
-          if (Math.hypot(p.x-q.x,p.y-q.y) > 33 * size) continue;
-          context.strokeStyle = `rgba(133,231,223,${p.depth < 0 ? .19 : .045})`; context.beginPath(); context.moveTo(p.x,p.y); context.lineTo(q.x,q.y); context.stroke();
-        }
-        context.fillStyle = `rgba(${p.depth < 0 ? "183,255,229" : "91,152,193"},${p.depth < 0 ? .85 : .25})`;
-        context.beginPath(); context.arc(p.x,p.y,Math.max(.65,1.35 * p.scale * size),0,Math.PI*2); context.fill();
-      }
-      const nodes = ["AGENTS", "TOOLS", "MEMORY", "EVALS"];
-      nodes.forEach((label,i) => {
-        const a = time * .75 + i * Math.PI / 2;
-        const p = project({ x: Math.cos(a) * 202, y: Math.sin(a) * 120, z: Math.sin(a) * 142 });
-        context.beginPath(); context.moveTo(cx,cy); context.lineTo(p.x,p.y); context.strokeStyle="rgba(151,221,209,.13)"; context.stroke();
-        const side = 17 * size * p.scale;
-        context.fillStyle = "rgba(15,39,47,.94)"; context.strokeStyle="rgba(165,242,221,.7)"; context.lineWidth=1;
-        context.beginPath(); context.moveTo(p.x,p.y-side); context.lineTo(p.x+side,p.y); context.lineTo(p.x,p.y+side); context.lineTo(p.x-side,p.y); context.closePath(); context.fill(); context.stroke();
-        context.fillStyle="#cdfbe7"; context.beginPath(); context.arc(p.x,p.y,2,0,Math.PI*2); context.fill();
-        context.font="9px Arial"; context.textAlign="center"; context.fillStyle="#a8c8cb"; context.fillText(label,p.x,p.y+side+19);
-      });
-      frame = requestAnimationFrame(draw);
-    };
-    resize(); draw();
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); intersection.disconnect(); canvas.removeEventListener("pointermove",pointer); canvas.removeEventListener("pointerleave",reset); };
-  }, []);
-  return <div className="agent-universe" aria-hidden="true"><canvas ref={canvasRef} /><span className="universe-coordinate">N / 24.8607° · E / 67.0011°</span><span className="universe-label">CONNECTED INTELLIGENCE</span><div className="universe-floor" /></div>;
-}
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   return (
-    <div className="portfolio" onPointerMove={event => {
-      if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const card = (event.target as HTMLElement).closest<HTMLElement>(".project-card, .service-card");
-      if (!card) return;
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--tilt-x", `${((event.clientY - rect.top) / rect.height - .5) * -5}deg`);
-      card.style.setProperty("--tilt-y", `${((event.clientX - rect.left) / rect.width - .5) * 5}deg`);
-      card.style.setProperty("--shine-x", `${(event.clientX - rect.left) / rect.width * 100}%`);
-      card.style.setProperty("--shine-y", `${(event.clientY - rect.top) / rect.height * 100}%`);
-    }} onPointerOut={event => {
-      const card = (event.target as HTMLElement).closest<HTMLElement>(".project-card, .service-card");
-      if (card && !card.contains(event.relatedTarget as Node | null)) { card.style.setProperty("--tilt-x", "0deg"); card.style.setProperty("--tilt-y", "0deg"); }
-    }}>
+    <div className="portfolio">
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <a className="brand" href="#" aria-label="NaveedTechLab home"><span className="brand-mark">n<span>.</span></span><span>NAVEED<span className="brand-light">TECHLAB</span></span></a>
@@ -163,7 +57,7 @@ export default function Portfolio() {
             <div className="hero-note"><span className="status-dot" /> Open to remote roles, relocation &amp; collaborations</div>
           </div>
           <div className="hero-visual">
-            <AgentUniverse />
+
             <div className="portrait-frame"><Image src="/muhammad-naveed.jpeg" alt="Muhammad Naveed wearing a navy suit" width={1122} height={1402} priority sizes="(max-width: 760px) 90vw, 440px" /><div className="portrait-caption"><span>MUHAMMAD NAVEED</span><small>AI Agent Engineer &amp; Full Stack Developer</small></div></div>
             <div className="floating-label"><span className="status-dot" /><span>Built for production.<br /><strong>Designed for reliability.</strong></span></div>
             <span className="visual-index">01 / HUMAN BEHIND THE SYSTEMS</span>
