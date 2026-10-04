@@ -1,698 +1,201 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatBot from "./components/ChatBot";
 import WhatsApp from "./components/WhatsApp";
+import { projects as allProjects, experience, skills } from "./lib/portfolio-data";
 
-/* ─── DATA ─────────────────────────────────────────────────── */
-
-const skills = [
-  { label: "Backend & Runtime", color: "from-violet-500 to-purple-400", tags: ["Node.js", "Python", "FastAPI", "Express", "node-cron", "REST APIs"] },
-  { label: "Frontend",     color: "from-blue-500 to-cyan-400",    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "HTML5/CSS3"] },
-  { label: "AI & LLM",     color: "from-indigo-500 to-cyan-400", tags: ["OpenAI API", "Anthropic API (Claude)", "Gemini API", "LangChain", "OpenRouter", "Agents SDK", "MCP"] },
-  { label: "Integrations", color: "from-green-500 to-emerald-400", tags: ["Slack Bot & Events API", "Google Sheets", "Google Calendar", "Gmail API", "Webhooks", "WhatsApp", "Twilio"] },
-  { label: "Cloud & DevOps", color: "from-sky-500 to-blue-400",   tags: ["Railway", "Docker", "Kubernetes", "Kafka", "Dapr", "CI/CD", "GitHub"] },
-  { label: "Database",     color: "from-rose-500 to-pink-400",    tags: ["MongoDB", "PostgreSQL", "Sanity CMS"] },
-  { label: "Architecture", color: "from-teal-500 to-cyan-400",    tags: ["Event-Driven", "Spec-Driven", "Fuzzy Matching / Alias Resolution", "BG Precompute & Caching", "Rate-Limit-Safe Pipelines"] },
+const projectRepositories: Record<string, string> = {
+  "Course Companion FTE": "https://github.com/NaveedTechLab/Hackathon-4-Course-Companion-FTE-",
+  "Todo App Phase 5": "https://github.com/NaveedTechLab/hackathon-2-todo",
+  "Personal AI Employee": "https://github.com/NaveedTechLab/Personal-AI-Employee-hackathon-0-",
+};
+const projects = allProjects.map(project => ({
+  ...project,
+  live: ["CRM Digital FTE", "Course Companion FTE", "Todo App Phase 5"].includes(project.title) ? null : project.live,
+  repository: projectRepositories[project.title] ?? null,
+}));
+const openSource = [
+  { name: "AI Skills Library", repo: "skills-library", label: "FLAGSHIP COLLECTION", text: "A reusable collection of 104+ AI skills covering agents, cloud infrastructure, full-stack development, automation, education and testing.", tags: ["104+ skills", "MCP", "Automation", "Full stack"] },
+  { name: "Naveed-Tech-Lab Skills", repo: "Naveed-Tech-Lab_Skills", label: "CUSTOM ENGINEERING SKILLS", text: "Packaged skills for FastAPI backends, Next.js interfaces, Kubernetes deployment, event-driven architecture and MCP-powered todo agents.", tags: ["FastAPI", "Next.js", "Kubernetes", "MCP"] },
+  { name: "SpecKit+ Development Guide", repo: "Spec-Kit-Plus-Driven-Development--SpecKit", label: "DEVELOPER RESOURCE", text: "A practical guide to specification-first AI development using SpecifyPlus, AI coding tools and MCP workflows.", tags: ["Spec-driven development", "MCP", "Documentation"] },
 ];
 
-const projects = [
-  {
-    title: "Slack/Google Automation Suite",
-    subtitle: "Production · Heat Wave Pest Control",
-    desc: "Five interconnected production automation systems for a U.S. multi-region pest-control operation: a Specialty Form Compliance Bot (token-based property matching with Levenshtein fuzzy matching + alias layer across 123 properties), a real-time Notes Verification Bot with 15-min escalation, an automated Weekly Reporting Suite, and a Specialty Recommendation engine with tier-aware pricing.",
-    tags: ["Node.js", "Slack API", "Google Sheets", "OpenRouter", "Railway"],
-    icon: "🛰️", accent: "from-indigo-500 to-violet-500", live: null,
-  },
-  {
-    title: "Live Operations Dashboard",
-    subtitle: "Production · Web App",
-    desc: "Password-protected ops dashboard (Express + vanilla JS) with six live sections — Overview, Route Timing, Units Allocation, Notes Bot Activity, Recommendations Tracking & Monthly Per-Technician Reporting. Slack-history route-timing engine, background precompute + snapshot caching (cut load from 60–90s timeouts to instant), and one-click CSV export.",
-    tags: ["Express", "JavaScript", "Slack API", "BG Precompute", "Caching"],
-    icon: "📊", accent: "from-sky-500 to-blue-500", live: null,
-  },
-  {
-    title: "Autonomous AI Marketing Agency",
-    subtitle: "Hackathon 2024 · Hugging Face",
-    desc: "Fully autonomous AI marketing agency that handles campaign strategy, content generation, and client outreach — built as a live startup and deployed on Hugging Face Spaces.",
-    tags: ["Python", "AI Agents", "FastAPI", "OpenAI API", "Automation"],
-    icon: "📣", accent: "from-indigo-500 to-cyan-500",
-    live: "https://naveedtechlab-autonomous-ai-marketing-agency.hf.space/",
-  },
-  {
-    title: "Personal AI Employee",
-    subtitle: "Hackathon 2024 · Digital FTE",
-    desc: "Autonomous AI employee with Gmail/WhatsApp automation, Obsidian memory system, and MCP tools — running 24/7 without human intervention.",
-    tags: ["OpenAI SDK", "MCP", "Gmail API", "WhatsApp", "Python"],
-    icon: "🤖", accent: "from-indigo-500 to-violet-500", live: null,
-  },
-  {
-    title: "CRM Digital FTE",
-    subtitle: "CRM Agent · Hugging Face",
-    desc: "Multi-channel customer support agent handling Gmail, WhatsApp, and Web forms with a PostgreSQL ticket system and FastAPI backend.",
-    tags: ["FastAPI", "PostgreSQL", "LangChain", "Twilio", "Python"],
-    icon: "🎯", accent: "from-blue-500 to-cyan-500",
-    live: "https://naveedtechlab-crm-digital-fte.hf.space",
-  },
-  {
-    title: "Course Companion FTE",
-    subtitle: "AI Tutor · Hugging Face",
-    desc: "AI-powered tutoring assistant with deterministic backend logic, skills-based agent architecture, and an interactive learning interface.",
-    tags: ["Python", "OpenAI API", "FastAPI", "Streamlit"],
-    icon: "📚", accent: "from-violet-500 to-purple-500",
-    live: "https://naveedtechlab-course-companion-fte.hf.space",
-  },
-  {
-    title: "Todo App Phase 5",
-    subtitle: "Full Stack · Hugging Face",
-    desc: "Spec-driven todo app evolved from console to full-stack with AI chatbot, cloud-native deployment, and OpenAI Agents SDK integration.",
-    tags: ["Next.js", "FastAPI", "OpenAI SDK", "Docker"],
-    icon: "✅", accent: "from-green-500 to-emerald-500",
-    live: "https://naveedtechlab-todo-app-phase5.hf.space",
-  },
-  {
-    title: "LearnFlow",
-    subtitle: "Learning Platform · Hugging Face",
-    desc: "Interactive AI-assisted learning flow platform with structured modules and an intuitive UI for seamless education experiences.",
-    tags: ["Python", "AI", "Streamlit", "OpenAI API"],
-    icon: "🎓", accent: "from-sky-500 to-blue-500",
-    live: "https://naveedtechlab-learnflow.hf.space",
-  },
-  {
-    title: "AI Native Textbook",
-    subtitle: "EdTech · Vercel",
-    desc: "AI-native digital textbook delivering interactive, intelligent content — blending traditional learning with generative AI capabilities.",
-    tags: ["Next.js", "OpenAI API", "Vercel", "TypeScript"],
-    icon: "📖", accent: "from-indigo-500 to-violet-500",
-    live: "https://ai-native-textbook1.vercel.app/",
-  },
-  {
-    title: "E-Commerce Store",
-    subtitle: "Freelance · Vercel",
-    desc: "Modern full-featured e-commerce web app with product listings, cart functionality, and a clean responsive UI — deployed on Vercel.",
-    tags: ["Next.js", "React", "Tailwind CSS", "Vercel"],
-    icon: "🛍️", accent: "from-rose-500 to-pink-500",
-    live: "https://e-comm-naveed.vercel.app/",
-  },
-  {
-    title: "Library Manager",
-    subtitle: "Utility App · Streamlit",
-    desc: "Smart library management system to add, search, and manage books with an intuitive Streamlit interface and persistent data storage.",
-    tags: ["Python", "Streamlit", "Pandas"],
-    icon: "📕", accent: "from-emerald-500 to-teal-500",
-    live: "https://naveed247365-library-manager-library-manager-iykdx8.streamlit.app/",
-  },
-  {
-    title: "Number Guessing Game",
-    subtitle: "Fun App · Streamlit",
-    desc: "Interactive browser-based number guessing game with difficulty levels and score tracking built with Python and Streamlit.",
-    tags: ["Python", "Streamlit", "Game Logic"],
-    icon: "🎮", accent: "from-teal-500 to-cyan-500",
-    live: "https://naveed247365-number-guessing-game-guessing-game-kfloll.streamlit.app/",
-  },
-  {
-    title: "Password Strength Meter",
-    subtitle: "Security Tool · Streamlit",
-    desc: "Real-time password strength analyzer with visual feedback, entropy scoring, and security suggestions.",
-    tags: ["Python", "Streamlit", "Security", "GUI"],
-    icon: "🔐", accent: "from-red-500 to-rose-500",
-    live: "https://password-strength-meter-with-a-gui.streamlit.app/",
-  },
-  {
-    title: "Secure Data Vault",
-    subtitle: "Encryption App · Streamlit",
-    desc: "End-to-end data encryption system to securely store and retrieve sensitive information using modern cryptographic algorithms.",
-    tags: ["Python", "Cryptography", "Streamlit", "Security"],
-    icon: "🔒", accent: "from-slate-500 to-gray-600",
-    live: "https://naveed247365-secure-data-encryption-system--secure-vault-sbgxir.streamlit.app/",
-  },
-  {
-    title: "Unit Converter",
-    subtitle: "Utility Tool · Streamlit",
-    desc: "Comprehensive unit conversion tool supporting length, weight, temperature, speed, and more — with a fast Streamlit interface.",
-    tags: ["Python", "Streamlit", "Math"],
-    icon: "📐", accent: "from-indigo-500 to-violet-500",
-    live: "https://naveed247365-unit-converter-unit-converter-cycms9.streamlit.app/",
-  },
-  {
-    title: "Streamlit Web App",
-    subtitle: "Web App · Streamlit",
-    desc: "Dynamic multi-feature web application showcasing Python-powered interactivity, data visualization, and UI components.",
-    tags: ["Python", "Streamlit", "Data Viz"],
-    icon: "🌐", accent: "from-fuchsia-500 to-pink-500",
-    live: "https://naveed247365-web-app-with-streamlit-app-hnkir1.streamlit.app/",
-  },
-  {
-    title: "Fiverr Freelance Work",
-    subtitle: "Freelance · Client Projects",
-    desc: "Shopify stores, custom dashboards, CMS-based websites, and automation workflows for clients — from design to deployment.",
-    tags: ["Shopify", "React", "Sanity CMS", "Node.js"],
-    icon: "💼", accent: "from-yellow-500 to-green-400", live: null,
-  },
+const tracks = [
+  { name: "Loop Engineering", count: 12, repo: "Loop-Engineering-Projects", text: "Scheduled autonomy, stopping conditions, maker-checker verification and self-healing loops." },
+  { name: "Harness Engineering", count: 8, repo: "Harness-Engineering-Projects", text: "Permission guardrails, typed outputs, hooks and prompt-injection defense." },
+  { name: "Graph Engineering", count: 8, repo: "Graph-Engineering-Projects", text: "Shared agent memory, typed claims, provenance and grounded fact-checking." },
+  { name: "Trusting the Checker", count: 8, repo: "Trusting-the-Checker-Projects", text: "Golden-set testing, judge calibration, regression gates and adversarial evaluations." },
+  { name: "Leaving the Laptop", count: 8, repo: "Leaving-the-Laptop-Projects", text: "Headless deployment, unattended scheduling, portability and credential hardening." },
 ];
+const links = ["About", "Expertise", "Projects", "Skills Library", "Experience", "Credentials"];
+function Arrow() { return <span aria-hidden="true">↗</span>; }
 
-const experience = [
-  {
-    icon: "🛰️", title: "AI Automation Engineer (Forward-Deployed)",
-    org: "Activus Capital Partners — Heat Wave Pest Control", period: "Apr 2026 – Present",
-    accent: "from-indigo-500 to-violet-500",
-    desc: "Own and operate five production Slack/Google Workspace automation systems plus a live operations dashboard for a U.S. multi-region pest-control company — supporting 8+ field technicians across 123 properties. Compliance bots, notes verification, weekly reporting, a recommendation engine, and a route-timing dashboard, with daily production monitoring, root-cause debugging, and same-day fixes. Report directly to the Managing Partner, Operations Coordinator & Director.",
-    live: null,
-  },
-  {
-    icon: "🏢", title: "Founder & Lead Developer",
-    org: "NaveedTechLab · Digital Agency", period: "2025 – Present",
-    accent: "from-violet-500 to-purple-500",
-    desc: "Built a digital agency targeting local Karachi businesses — secured first two clients (CCTV World Karachi & Ha-Aeen Dentistry). Produced 6-month digital transformation roadmaps, partner agreements, and pricing strategy; delivered digital footprint setup, customer-acquisition systems, and workflow automation.",
-    live: null,
-  },
-  {
-    icon: "💻", title: "Freelance Full Stack Developer",
-    org: "Fiverr & Direct Clients · Remote", period: "2023 – Present",
-    accent: "from-blue-500 to-cyan-500",
-    desc: "Delivered Shopify stores, business websites, custom dashboards, CMS-based sites, and automation workflows end-to-end — from requirements through design, development, and deployment.",
-    live: null,
-  },
-  {
-    icon: "📱", title: "Mobile Software Technician",
-    org: "Sareena Mobile Market", period: "Past Experience",
-    accent: "from-blue-500 to-cyan-500",
-    desc: "Performed mobile software flashing, firmware updates, and software recovery for a wide range of Android and feature phones in a high-volume repair environment.",
-    live: null,
-  },
-  {
-    icon: "🥽", title: "VR Experience Designer",
-    org: "Freelance / Event-Based", period: "Past Experience",
-    accent: "from-violet-500 to-purple-500",
-    desc: "Designed and set up immersive VR sitting and riding simulation experiences for events, including hardware configuration and user experience flow.",
-    live: null,
-  },
-  {
-    icon: "🎮", title: "Kinect Gaming Manager",
-    org: "Mufti Ramzan Park · Xbox 360 Kinect", period: "6 Months",
-    accent: "from-green-500 to-emerald-500",
-    desc: "Designed and managed a large-scale Kinect-based interactive gaming setup on a 12-foot screen at Mufti Ramzan Park. Handled installation, daily operations, and visitor engagement.",
-    live: null,
-  },
-  {
-    icon: "🏢", title: "Operations Manager",
-    org: "Marble Shop", period: "1 Year",
-    accent: "from-sky-500 to-blue-500",
-    desc: "Managed day-to-day operations of a marble retail business — overseeing inventory, vendor relations, staff coordination, and customer sales.",
-    live: null,
-  },
-  {
-    icon: "🔧", title: "Owner – Marble Machine Parts Workshop",
-    org: "Self-Employed Business", period: "5 Years",
-    accent: "from-rose-500 to-pink-500",
-    desc: "Ran an independent workshop manufacturing and supplying spare parts for marble cutting and polishing machinery. Managed production, client orders, and business operations end-to-end.",
-    live: null,
-  },
-];
 
-const navLinks = ["About", "Skills", "Projects", "Experience", "Education", "Contact"];
-
-/* ─── MAIN ─────────────────────────────────────────────────── */
-
-export default function Portfolio() {
-  const [active, setActive]     = useState("About");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark]         = useState(true);
-
-  /* persist theme */
+type Point3 = { x: number; y: number; z: number };
+function AgentUniverse() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved) setDark(saved === "dark");
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let width = 600, height = 560, frame = 0, visible = true, time = 0;
+    let targetX = 0, targetY = 0, cameraX = 0, cameraY = 0;
+    const points: Point3[] = Array.from({ length: 460 }, (_, i) => {
+      const y = 1 - (i / 459) * 2;
+      const radius = Math.sqrt(1 - y * y);
+      const angle = Math.PI * (3 - Math.sqrt(5)) * i;
+      return { x: Math.cos(angle) * radius * 118, y: y * 118, z: Math.sin(angle) * radius * 118 };
+    });
+    const stars = Array.from({ length: 55 }, (_, i) => ({ x: ((i * 73 + 19) % 997) / 997, y: ((i * 139 + 71) % 991) / 991, radius: i % 3 === 0 ? 1.4 : .65 }));
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      width = bounds.width; height = bounds.height;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    };
+    const observer = new ResizeObserver(resize); observer.observe(canvas);
+    const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }); intersection.observe(canvas);
+    const pointer = (event: PointerEvent) => {
+      const bounds = canvas.getBoundingClientRect();
+      targetX = ((event.clientX - bounds.left) / bounds.width - .5) * .65;
+      targetY = ((event.clientY - bounds.top) / bounds.height - .5) * .45;
+    };
+    const reset = () => { targetX = 0; targetY = 0; };
+    canvas.addEventListener("pointermove", pointer); canvas.addEventListener("pointerleave", reset);
+    const draw = () => {
+      if (!visible || document.hidden) { frame = requestAnimationFrame(draw); return; }
+      if (!reducedMotion.matches) time += .004;
+      cameraX += (targetX - cameraX) * .045; cameraY += (targetY - cameraY) * .045;
+      context.clearRect(0, 0, width, height);
+      const size = Math.min(width / 530, height / 530);
+      const cx = width * .5, cy = height * .46;
+      const project = (point: Point3) => {
+        const angle = time + cameraX;
+        const x = point.x * Math.cos(angle) + point.z * Math.sin(angle);
+        const z = -point.x * Math.sin(angle) + point.z * Math.cos(angle);
+        const y = point.y * Math.cos(cameraY + .2) - z * Math.sin(cameraY + .2);
+        const depth = point.y * Math.sin(cameraY + .2) + z * Math.cos(cameraY + .2);
+        const perspective = 500 / (500 + depth);
+        return { x: cx + x * perspective * size, y: cy + y * perspective * size, depth, scale: perspective };
+      };
+      for (const star of stars) {
+        context.fillStyle = "rgba(170,219,224,.35)"; context.beginPath(); context.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2); context.fill();
+      }
+      const halo = context.createRadialGradient(cx, cy, 20, cx, cy, 235 * size);
+      halo.addColorStop(0, "rgba(84,218,209,.22)"); halo.addColorStop(.45, "rgba(65,100,209,.12)"); halo.addColorStop(1, "rgba(4,13,22,0)");
+      context.fillStyle = halo; context.fillRect(0, 0, width, height);
+      for (let ring = 0; ring < 3; ring++) {
+        context.beginPath();
+        for (let i = 0; i <= 150; i++) {
+          const a = i / 150 * Math.PI * 2, r = 175 + ring * 23;
+          const p = project({ x: Math.cos(a) * r, y: Math.sin(a) * r * Math.cos(.7 + ring * .7), z: Math.sin(a) * r * Math.sin(.7 + ring * .7) });
+          if (i === 0) context.moveTo(p.x,p.y); else context.lineTo(p.x,p.y);
+        }
+        context.strokeStyle = ring === 1 ? "rgba(159,135,255,.35)" : "rgba(125,235,224,.26)"; context.lineWidth = 1; context.stroke();
+      }
+      const projected = points.map(project);
+      for (let i = 0; i < projected.length; i++) {
+        const p = projected[i];
+        for (const offset of [13,21]) {
+          const q = projected[(i + offset) % projected.length];
+          if (Math.hypot(p.x-q.x,p.y-q.y) > 33 * size) continue;
+          context.strokeStyle = `rgba(133,231,223,${p.depth < 0 ? .19 : .045})`; context.beginPath(); context.moveTo(p.x,p.y); context.lineTo(q.x,q.y); context.stroke();
+        }
+        context.fillStyle = `rgba(${p.depth < 0 ? "183,255,229" : "91,152,193"},${p.depth < 0 ? .85 : .25})`;
+        context.beginPath(); context.arc(p.x,p.y,Math.max(.65,1.35 * p.scale * size),0,Math.PI*2); context.fill();
+      }
+      const nodes = ["AGENTS", "TOOLS", "MEMORY", "EVALS"];
+      nodes.forEach((label,i) => {
+        const a = time * .75 + i * Math.PI / 2;
+        const p = project({ x: Math.cos(a) * 202, y: Math.sin(a) * 120, z: Math.sin(a) * 142 });
+        context.beginPath(); context.moveTo(cx,cy); context.lineTo(p.x,p.y); context.strokeStyle="rgba(151,221,209,.13)"; context.stroke();
+        const side = 17 * size * p.scale;
+        context.fillStyle = "rgba(15,39,47,.94)"; context.strokeStyle="rgba(165,242,221,.7)"; context.lineWidth=1;
+        context.beginPath(); context.moveTo(p.x,p.y-side); context.lineTo(p.x+side,p.y); context.lineTo(p.x,p.y+side); context.lineTo(p.x-side,p.y); context.closePath(); context.fill(); context.stroke();
+        context.fillStyle="#cdfbe7"; context.beginPath(); context.arc(p.x,p.y,2,0,Math.PI*2); context.fill();
+        context.font="9px Arial"; context.textAlign="center"; context.fillStyle="#a8c8cb"; context.fillText(label,p.x,p.y+side+19);
+      });
+      frame = requestAnimationFrame(draw);
+    };
+    resize(); draw();
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); intersection.disconnect(); canvas.removeEventListener("pointermove",pointer); canvas.removeEventListener("pointerleave",reset); };
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  }, [dark]);
-
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-
-  const scrollTo = (id: string) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
-    setActive(id);
-    setMenuOpen(false);
-  };
-
-  /* ── theme tokens ── */
-  const bg      = dark ? "bg-[#0b1020]"   : "bg-slate-50";
-  const surface = dark ? "bg-[#111a33]"   : "bg-white";
-  const card    = dark ? "bg-white/5 border-white/8"  : "bg-white border-slate-200";
-  const txt     = dark ? "text-white"      : "text-slate-900";
-  const muted   = dark ? "text-slate-400"  : "text-slate-500";
-  const navBg   = scrolled
-    ? dark ? "bg-[#0b1020]/90 backdrop-blur-xl shadow-2xl shadow-black/40 border-b border-white/5"
-           : "bg-white/90 backdrop-blur-xl shadow-lg border-b border-slate-200"
-    : "bg-transparent";
-
-  return (
-    <div className={`${bg} ${txt} min-h-screen overflow-x-hidden transition-colors duration-300`}>
-
-      {/* ── NAVBAR ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
-          <span className="text-violet-400 font-bold text-lg tracking-wider flex-shrink-0">MN<span className={txt}>.</span></span>
-
-          {/* Desktop nav */}
-          <ul className="hidden md:flex gap-6 lg:gap-8">
-            {navLinks.map((l) => (
-              <li key={l}>
-                <button onClick={() => scrollTo(l)}
-                  className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
-                    active === l ? "text-violet-400" : `${muted} hover:${txt}`}`}>
-                  {l}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Theme toggle */}
-            <button
-              onClick={() => setDark(!dark)}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                dark ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200"}`}
-              title="Toggle theme"
-            >
-              {dark ? "☀️" : "🌙"}
-            </button>
-
-            <a href="/Muhammad_Naveed_CV.pdf" download
-              className="hidden sm:inline-flex items-center gap-2 bg-violet-500 hover:bg-violet-400 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full transition-all duration-200 hover:scale-105 flex-shrink-0">
-              ↓ CV
-            </a>
-
-            {/* Mobile hamburger */}
-            <button className={`md:hidden text-xl ${txt}`} onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? "✕" : "☰"}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className={`md:hidden border-t px-6 py-4 flex flex-col gap-4 ${
-            dark ? "bg-[#111a33] border-white/10" : "bg-white border-slate-200"}`}>
-            {navLinks.map((l) => (
-              <button key={l} onClick={() => scrollTo(l)}
-                className={`text-left text-sm font-medium transition-colors ${muted} hover:text-violet-400`}>
-                {l}
-              </button>
-            ))}
-            <a href="/Muhammad_Naveed_CV.pdf" download
-              className="bg-violet-500 text-white text-sm font-bold px-4 py-2 rounded-full text-center">
-              ↓ Download CV
-            </a>
-          </div>
-        )}
-      </nav>
-
-      {/* ══════════════════════════════════
-          HERO
-      ══════════════════════════════════ */}
-      <section id="about" className="min-h-screen flex items-center justify-center relative pt-20 pb-12 px-4 sm:px-6 overflow-hidden">
-        {/* blobs */}
-        <div className="absolute top-20 left-0 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 right-0 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-
-          {/* Text */}
-          <div className="animate-fade-left order-2 md:order-1 text-center md:text-left">
-            {/* Terminal window */}
-            <div className={`inline-block text-left rounded-xl border font-mono text-xs mb-5 overflow-hidden shadow-xl ${
-              dark ? "bg-black/60 border-white/10" : "bg-slate-900 border-slate-700"}`}>
-              <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                <span className="ml-2 text-slate-400 text-[10px]">naveedtechlab ~ portfolio</span>
-              </div>
-              <div className="px-3.5 py-2.5">
-                <span className="text-slate-500">$ </span>
-                <span className="text-cyan-400">claude code</span>
-                <span className="text-slate-300"> --deploy --spec-first</span>
-                <span className="text-cyan-400 animate-blink">█</span>
-              </div>
-            </div>
-
-            <span className="flex items-center gap-2 justify-center md:justify-start bg-violet-500/15 border border-violet-500/30 text-violet-400 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-5 w-fit mx-auto md:mx-0">
-              <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" /> Available for Work
-            </span>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-4">
-              Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-300 bg-clip-text text-transparent animate-gradient">
-                Muhammad
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-gradient">
-                Naveed
-              </span>
-            </h1>
-
-            <p className={`${muted} text-sm sm:text-base lg:text-lg leading-relaxed mb-7 max-w-lg mx-auto md:mx-0`}>
-              <span className={`${txt} font-semibold`}>Forward-Deployed AI Automation Engineer</span> &amp;{" "}
-              <span className={`${txt} font-semibold`}>Full Stack Developer</span> — building &amp; operating{" "}
-              <span className="text-violet-400 font-semibold">production automation systems</span> for a U.S. enterprise client, from Karachi, Pakistan.
-            </p>
-
-            <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
-              <button onClick={() => scrollTo("Projects")}
-                className="bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-bold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-violet-500/25 text-sm sm:text-base">
-                View Projects →
-              </button>
-              <button onClick={() => scrollTo("Contact")}
-                className={`border font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 text-sm sm:text-base ${
-                  dark ? "border-white/20 hover:border-violet-400/50 text-white" : "border-slate-300 hover:border-violet-400 text-slate-700"}`}>
-                Contact Me
-              </button>
-            </div>
-
-            {/* Socials */}
-            <div className="flex gap-2 flex-wrap justify-center md:justify-start">
-              {[
-                { label: "WhatsApp",  href: "https://wa.me/923003627458",               icon: "🟢" },
-                { label: "GitHub",    href: "https://github.com/naveedtechlab",        icon: "⌨️" },
-                { label: "LinkedIn",  href: "https://linkedin.com/in/naveedtechlab",    icon: "💼" },
-                { label: "YouTube",   href: "https://youtube.com/@naveedtechlab",       icon: "▶️" },
-                { label: "Instagram", href: "https://instagram.com/naveedtechlab",      icon: "📸" },
-                { label: "X",         href: "https://x.com/naveedtechlab",              icon: "𝕏"  },
-                { label: "Facebook",  href: "https://facebook.com/naveedtechlab",       icon: "📘" },
-              ].map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                  className={`border text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 hover:text-violet-400 hover:border-violet-400/40 ${
-                    dark ? "border-white/10 text-slate-300" : "border-slate-200 text-slate-600"}`}>
-                  <span>{s.icon}</span>{s.label}
-                </a>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-8 max-w-md mx-auto md:mx-0">
-              {[
-                { n: "5", l: "Production Systems" },
-                { n: "123", l: "Properties Served" },
-                { n: "15+", l: "Projects Shipped" },
-              ].map((st) => (
-                <div key={st.l} className={`rounded-xl border px-2 py-3 text-center ${
-                  dark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"}`}>
-                  <div className="font-mono text-xl sm:text-2xl font-extrabold text-cyan-400">{st.n}</div>
-                  <div className={`text-[10px] sm:text-xs mt-0.5 leading-tight ${muted}`}>{st.l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Photo */}
-          <div className="flex justify-center animate-fade-right order-1 md:order-2">
-            <div className="relative">
-              <div className="absolute -inset-3 sm:-inset-4 rounded-full border-2 border-dashed border-violet-400/30 animate-spin-slow" />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 blur-2xl animate-pulse" />
-              <div className="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-violet-400 animate-pulse-ring animate-float shadow-2xl shadow-violet-500/20">
-                <Image src="/profile.jpg" alt="Muhammad Naveed" fill className="object-cover object-top" priority />
-              </div>
-              <div className={`absolute -top-1 -right-3 sm:-top-2 sm:-right-4 border rounded-2xl px-2.5 py-1.5 text-xs font-bold text-violet-400 shadow-xl animate-fade-up delay-300 ${
-                dark ? "bg-white/5 backdrop-blur-lg border-white/10" : "bg-white border-slate-200"}`}>
-                🤖 AI Engineer
-              </div>
-              <div className={`absolute -bottom-1 -left-3 sm:-bottom-2 sm:-left-4 border rounded-2xl px-2.5 py-1.5 text-xs font-bold text-cyan-400 shadow-xl animate-fade-up delay-500 ${
-                dark ? "bg-white/5 backdrop-blur-lg border-white/10" : "bg-white border-slate-200"}`}>
-                ⚡ 5 Production Systems
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
-          <span className="text-xs text-slate-400 tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-6 sm:h-8 bg-gradient-to-b from-slate-400 to-transparent" />
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          SKILLS
-      ══════════════════════════════════ */}
-      <section id="skills" className="py-16 sm:py-24 px-4 sm:px-6 relative">
-        {dark && <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/20 to-transparent pointer-events-none" />}
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader eyebrow="What I work with" title="Technical Skills"
-            sub="Full-spectrum expertise from frontend to AI agent orchestration" dark={dark} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-            {skills.map((s, i) => (
-              <div key={s.label}
-                className={`border rounded-2xl p-4 sm:p-5 card-hover animate-fade-up ${card}`}
-                style={{ animationDelay: `${i * 0.08}s` }}>
-                <div className={`inline-block bg-gradient-to-r ${s.color} text-transparent bg-clip-text font-bold text-xs sm:text-sm tracking-wider uppercase mb-3`}>
-                  {s.label}
-                </div>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                  {s.tags.map((t) => (
-                    <span key={t}
-                      className={`text-xs px-2.5 sm:px-3 py-1 rounded-full border transition-colors duration-200 cursor-default hover:text-violet-400 hover:border-violet-400/40 ${
-                        dark ? "bg-white/5 border-white/10 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-600"}`}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          PROJECTS
-      ══════════════════════════════════ */}
-      <section id="projects" className="py-16 sm:py-24 px-4 sm:px-6 relative">
-        {dark && <>
-          <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-violet-500/8 rounded-full blur-3xl pointer-events-none" />
-        </>}
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader eyebrow="What I've built" title="Projects & Experience"
-            sub="Production-grade AI systems, hackathon wins, live apps & client projects" dark={dark} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {projects.map((p, i) => (
-              <div key={p.title}
-                className={`border rounded-2xl p-4 sm:p-6 card-hover flex flex-col gap-3 sm:gap-4 animate-fade-up ${card}`}
-                style={{ animationDelay: `${i * 0.05}s` }}>
-                <div className="flex items-start justify-between gap-2">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${p.accent} rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-lg flex-shrink-0`}>
-                    {p.icon}
-                  </div>
-                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full text-right ${
-                    dark ? "text-slate-500 bg-white/5" : "text-slate-400 bg-slate-100"}`}>
-                    {p.subtitle}
-                  </span>
-                </div>
-
-                <div className="flex-1">
-                  <h3 className={`font-bold text-sm sm:text-base mb-1.5 sm:mb-2 ${txt}`}>{p.title}</h3>
-                  <p className={`text-xs sm:text-sm leading-relaxed ${muted}`}>{p.desc}</p>
-                </div>
-
-                <div className={`flex flex-wrap gap-1.5 sm:gap-2 pt-2 border-t ${dark ? "border-white/5" : "border-slate-100"}`}>
-                  {p.tags.map((t) => (
-                    <span key={t}
-                      className={`text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-gradient-to-r ${p.accent} text-white border border-white/10 opacity-80`}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                {"live" in p && p.live && (
-                  <a href={p.live} target="_blank" rel="noopener noreferrer"
-                    className={`flex items-center justify-center gap-2 bg-gradient-to-r ${p.accent} text-white text-xs font-bold py-2 px-4 rounded-xl hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-md`}>
-                    🚀 Live Demo
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          EXPERIENCE
-      ══════════════════════════════════ */}
-      <section id="experience" className="py-16 sm:py-24 px-4 sm:px-6 relative">
-        {dark && <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-950/15 to-transparent pointer-events-none" />}
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader eyebrow="My journey" title="Work Experience"
-            sub="From forward-deployed AI automation for a U.S. enterprise to founding my own agency" dark={dark} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {experience.map((e, i) => (
-              <div key={e.title}
-                className={`border rounded-2xl p-4 sm:p-6 card-hover flex flex-col gap-3 sm:gap-4 animate-fade-up ${card}`}
-                style={{ animationDelay: `${i * 0.07}s` }}>
-                <div className="flex items-start justify-between gap-2">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${e.accent} rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-lg flex-shrink-0`}>
-                    {e.icon}
-                  </div>
-                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full text-right ${
-                    dark ? "text-slate-500 bg-white/5" : "text-slate-400 bg-slate-100"}`}>
-                    {e.period}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <h3 className={`font-bold text-sm sm:text-base mb-0.5 ${dark ? "text-white" : "text-slate-900"}`}>{e.title}</h3>
-                  <p className={`text-xs font-semibold bg-gradient-to-r ${e.accent} bg-clip-text text-transparent mb-2`}>{e.org}</p>
-                  <p className={`text-xs sm:text-sm leading-relaxed ${muted}`}>{e.desc}</p>
-                </div>
-                {e.live && (
-                  <a href={e.live} target="_blank" rel="noopener noreferrer"
-                    className={`flex items-center justify-center gap-2 bg-gradient-to-r ${e.accent} text-white text-xs font-bold py-2 px-4 rounded-xl hover:opacity-90 transition-all duration-200 hover:scale-105 shadow-md`}>
-                    🚀 Live Demo
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          EDUCATION
-      ══════════════════════════════════ */}
-      <section id="education" className="py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader eyebrow="My background" title="Education"
-            sub="Continuous learning in cutting-edge technologies" dark={dark} />
-          <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:gap-5">
-            {[
-              {
-                icon: "🎓", degree: "Governor House Initiative", field: "GenAI, Web3 & Metaverse",
-                year: "2023 – Present", accent: "from-indigo-500 to-violet-500",
-                desc: "Intensive government-backed program covering Generative AI, Web3 technologies, Metaverse development, and modern engineering practices.",
-              },
-              {
-                icon: "💻", degree: "DCIT – Diploma in Computer IT", field: "Diploma in Computer Information Technology",
-                year: "Completed", accent: "from-violet-500 to-purple-500",
-                desc: "Comprehensive diploma covering computer fundamentals, software applications, networking basics, and information technology principles.",
-              },
-              {
-                icon: "🖥️", degree: "CIT – Certificate in IT", field: "Certificate in Information Technology",
-                year: "Completed", accent: "from-green-500 to-emerald-500",
-                desc: "Foundational certificate program in computer operations, office software, and basic IT skills.",
-              },
-              {
-                icon: "📚", degree: "Crescent Grammar School", field: "Matriculation",
-                year: "Completed", accent: "from-blue-500 to-cyan-500",
-                desc: "Foundation education building analytical thinking and problem-solving skills.",
-              },
-            ].map((e, i) => (
-              <div key={e.degree}
-                className={`border rounded-2xl p-4 sm:p-6 card-hover flex gap-4 sm:gap-5 animate-fade-up ${card}`}
-                style={{ animationDelay: `${i * 0.15}s` }}>
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br ${e.accent} rounded-xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-lg`}>
-                  {e.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between flex-wrap gap-2 mb-1">
-                    <h3 className={`font-bold text-sm sm:text-base ${txt}`}>{e.degree}</h3>
-                    <span className="text-xs text-violet-400 font-semibold bg-violet-500/10 border border-violet-500/20 px-2.5 py-0.5 rounded-full flex-shrink-0">
-                      {e.year}
-                    </span>
-                  </div>
-                  <p className={`text-xs sm:text-sm font-semibold bg-gradient-to-r ${e.accent} bg-clip-text text-transparent mb-1.5`}>{e.field}</p>
-                  <p className={`text-xs sm:text-sm leading-relaxed ${muted}`}>{e.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          CONTACT
-      ══════════════════════════════════ */}
-      <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6 relative">
-        {dark && <div className="absolute inset-0 bg-gradient-to-t from-blue-950/30 to-transparent pointer-events-none" />}
-        <div className="max-w-6xl mx-auto">
-          <SectionHeader eyebrow="Let's connect" title="Get In Touch"
-            sub="Open to collaborations, freelance projects, and full-time opportunities" dark={dark} />
-          <div className="max-w-2xl mx-auto">
-            <div className={`border rounded-3xl p-6 sm:p-8 md:p-12 text-center animate-fade-up ${card}`}>
-              <p className={`text-sm sm:text-base leading-relaxed mb-8 sm:mb-10 max-w-lg mx-auto ${muted}`}>
-                Whether you need an <span className="text-violet-400 font-semibold">AI automation system</span>,
-                a full-stack web app, or a custom agent — I&apos;m ready to build it.
-                <br className="hidden sm:block" />
-                <span className="text-xs font-mono text-cyan-400/80">// for Pakistan / UAE — WhatsApp preferred ⚡</span>
-              </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
-                {[
-                  { icon: "✉️", label: "Email",     value: "qureshinaveed21@hotmail.com",        href: "mailto:qureshinaveed21@hotmail.com" },
-                  { icon: "🟢", label: "WhatsApp",  value: "+92 300 3627458",                    href: "https://wa.me/923003627458" },
-                  { icon: "⌨️", label: "GitHub",    value: "naveedtechlab",                      href: "https://github.com/naveedtechlab" },
-                  { icon: "💼", label: "LinkedIn",  value: "naveedtechlab",                      href: "https://linkedin.com/in/naveedtechlab" },
-                  { icon: "▶️", label: "YouTube",   value: "@naveedtechlab",                     href: "https://youtube.com/@naveedtechlab" },
-                  { icon: "📸", label: "Instagram", value: "@naveedtechlab",                     href: "https://instagram.com/naveedtechlab" },
-                  { icon: "𝕏",  label: "X",         value: "@naveedtechlab",                     href: "https://x.com/naveedtechlab" },
-                  { icon: "📘", label: "Facebook",  value: "naveedtechlab",                      href: "https://facebook.com/naveedtechlab" },
-                  { icon: "📍", label: "Location",  value: "Karachi, Pakistan",                  href: "#" },
-                ].map((c) => (
-                  <a key={c.label} href={c.href} target="_blank" rel="noopener noreferrer"
-                    className={`border rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-200 hover:scale-105 group hover:border-violet-400/40 ${
-                      dark ? "border-white/10 hover:bg-white/5" : "border-slate-200 hover:bg-violet-50"}`}>
-                    <span className="text-xl sm:text-2xl">{c.icon}</span>
-                    <span className={`text-xs uppercase tracking-widest ${muted}`}>{c.label}</span>
-                    <span className={`text-xs font-medium group-hover:text-violet-400 transition-colors text-center break-all leading-tight ${txt}`}>
-                      {c.value}
-                    </span>
-                  </a>
-                ))}
-              </div>
-
-              <a href="mailto:qureshinaveed21@hotmail.com"
-                className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-full transition-all duration-200 hover:scale-105 shadow-xl shadow-violet-500/25 text-sm sm:text-base">
-                ✉️ Send Me an Email
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className={`border-t py-6 sm:py-8 px-4 sm:px-6 text-center ${dark ? "border-white/5" : "border-slate-200"}`}>
-        <p className={`text-xs sm:text-sm font-mono ${muted}`}>
-          <span className="text-cyan-500/60">$ </span>
-          © 2026 <span className="text-violet-400 font-semibold">Muhammad Naveed</span> · built with Next.js &amp; Tailwind CSS
-        </p>
-      </footer>
-
-      {/* FLOATING BUTTONS */}
-      <ChatBot dark={dark} />
-      <WhatsApp />
-    </div>
-  );
+  return <div className="agent-universe" aria-hidden="true"><canvas ref={canvasRef} /><span className="universe-coordinate">N / 24.8607° · E / 67.0011°</span><span className="universe-label">CONNECTED INTELLIGENCE</span><div className="universe-floor" /></div>;
 }
-
-/* ─── SECTION HEADER ────────────────────────────────────────── */
-function SectionHeader({ eyebrow, title, sub, dark }: {
-  eyebrow: string; title: string; sub: string; dark: boolean;
-}) {
+export default function Portfolio() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   return (
-    <div className="text-center mb-10 sm:mb-14 animate-fade-up">
-      <span className="inline-block font-mono text-cyan-400 text-sm mb-3">
-        <span className="text-slate-500">// </span>{title.toLowerCase().replace(/\s+/g, "-")}
-      </span>
-      <h2 className={`text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 sm:mb-3 ${dark ? "text-white" : "text-slate-900"}`}>
-        {title}
-      </h2>
-      <p className={`text-sm sm:text-base max-w-xl mx-auto font-mono ${dark ? "text-slate-500" : "text-slate-500"}`}>
-        <span className="text-cyan-500/60">{"> "}</span>{sub}
-      </p>
+    <div className="portfolio" onPointerMove={event => {
+      if (event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const card = (event.target as HTMLElement).closest<HTMLElement>(".project-card, .service-card");
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--tilt-x", `${((event.clientY - rect.top) / rect.height - .5) * -5}deg`);
+      card.style.setProperty("--tilt-y", `${((event.clientX - rect.left) / rect.width - .5) * 5}deg`);
+      card.style.setProperty("--shine-x", `${(event.clientX - rect.left) / rect.width * 100}%`);
+      card.style.setProperty("--shine-y", `${(event.clientY - rect.top) / rect.height * 100}%`);
+    }} onPointerOut={event => {
+      const card = (event.target as HTMLElement).closest<HTMLElement>(".project-card, .service-card");
+      if (card && !card.contains(event.relatedTarget as Node | null)) { card.style.setProperty("--tilt-x", "0deg"); card.style.setProperty("--tilt-y", "0deg"); }
+    }}>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="site-header">
+        <a className="brand" href="#" aria-label="NaveedTechLab home"><span className="brand-mark">n<span>.</span></span><span>NAVEED<span className="brand-light">TECHLAB</span></span></a>
+        <button className="menu-toggle" aria-expanded={menuOpen} aria-controls="navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "Close ✕" : "Menu ☰"}</button>
+        <nav id="navigation" className={menuOpen ? "navigation open" : "navigation"} aria-label="Main navigation">
+          {links.map(link => <a key={link} href={`#${link.toLowerCase().replace(/ /g, "-")}`} onClick={() => setMenuOpen(false)}>{link}</a>)}
+          <a className="nav-contact" href="#contact" onClick={() => setMenuOpen(false)}>Let&apos;s talk <Arrow /></a>
+        </nav>
+      </header>
+      <main id="main">
+        <section className="hero container" id="about">
+          <div className="hero-copy">
+            <p className="eyebrow"><span className="status-dot" /> AI AGENT ENGINEER · KARACHI, PAKISTAN</p>
+            <h1>Intelligent systems.<br /><span>Real-world impact.</span></h1>
+            <p className="hero-description">I&apos;m Muhammad Naveed. I build reliable AI agents, production automations and full-stack applications that turn complex workflows into work that gets done.</p>
+            <div className="hero-actions"><a className="button primary" href="#projects">Explore my work <Arrow /></a><a className="button secondary" href="/Muhammad_Naveed_CV_AI_Agent_Engineer.pdf" download>Download CV <span aria-hidden="true">↓</span></a></div>
+            <div className="hero-note"><span className="status-dot" /> Open to remote roles, relocation &amp; collaborations</div>
+          </div>
+          <div className="hero-visual">
+            <AgentUniverse />
+            <div className="portrait-frame"><Image src="/muhammad-naveed.jpeg" alt="Muhammad Naveed wearing a navy suit" width={1122} height={1402} priority sizes="(max-width: 760px) 90vw, 440px" /><div className="portrait-caption"><span>MUHAMMAD NAVEED</span><small>AI Agent Engineer &amp; Full Stack Developer</small></div></div>
+            <div className="floating-label"><span className="status-dot" /><span>Built for production.<br /><strong>Designed for reliability.</strong></span></div>
+            <span className="visual-index">01 / HUMAN BEHIND THE SYSTEMS</span>
+          </div>
+        </section>
+        <div className="stats container">{[["5", "Production automation systems"], ["123", "Properties supported"], ["8+", "Field technicians"], ["44", "Agent engineering practice projects"]].map(([value,label]) => <div key={label}><strong>{value}<span> /</span></strong><p>{label}</p></div>)}</div>
+        <div className="stack-strip"><div className="container"><span>THE TOOLS BEHIND THE WORK</span><p>Claude <i>✳</i> OpenAI <i>✳</i> Python <i>✳</i> Node.js <i>✳</i> Next.js <i>✳</i> MCP</p></div></div>
+        <section className="section container" id="expertise">
+          <div className="section-heading"><div><p className="eyebrow">01 / WHAT I DO</p><h2>From an idea.<br />To a working system.</h2></div><p>I work across agents, integrations and interfaces, with the engineering discipline to keep them running after deployment.</p></div>
+          <div className="services-grid">{[
+            ["01", "AI agents & reliable autonomy", "Agents that plan, use tools and act within clear boundaries. Built with stopping conditions, shared memory, guardrails and meaningful evaluations.", ["Claude", "OpenAI", "Agents SDK", "MCP"]],
+            ["02", "Workflow automation", "Connected Slack and Google Workspace systems for compliance, reporting, real-time verification and operational decision-making.", ["Slack API", "Google Workspace", "Node.js", "Webhooks"]],
+            ["03", "Full-stack development", "Responsive websites, operations dashboards and API-backed applications, from requirements and architecture through deployment.", ["Next.js", "React", "FastAPI", "PostgreSQL"]],
+          ].map(([number,title,text,tags]) => <article className="service-card" key={String(title)}><div className="card-top"><span>{number}</span><Arrow /></div><h3>{title}</h3><p>{text}</p><div className="tags">{(tags as string[]).map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
+          <details className="tech-details"><summary>Explore my full technical toolkit <span>+</span></summary><div className="toolkit">{skills.map(skill => <div key={skill.label}><h3>{skill.label}</h3><p>{skill.tags.join(" · ")}</p></div>)}</div></details>
+        </section>
+        <section className="projects-section" id="projects"><div className="container section">
+          <div className="section-heading"><div><p className="eyebrow">02 / SELECTED WORK</p><h2>Built to solve.<br /><span>Not just to showcase.</span></h2></div><a className="text-link" href="https://github.com/naveedtechlab" target="_blank" rel="noopener noreferrer">Explore GitHub <Arrow /></a></div>
+          <div className="project-grid">{(showAll ? projects : projects.slice(0,7)).map((project,index) => <article className={`project-card project-${index % 3}`} key={project.title}><div className="project-art" aria-hidden="true"><div className="diagram"><span>{index < 2 ? "WORKFLOW" : "INPUT"}</span><b>↓</b><strong>{index < 2 ? "AUTOMATION ENGINE" : "AI AGENT"}</strong><b>↓</b><div><span>TOOLS</span><span>MEMORY</span><span>OUTPUT</span></div></div><span className="art-number">{String(index+1).padStart(2,"0")}</span></div><div className="project-body"><p className="eyebrow">{project.subtitle}</p><h3>{project.title}</h3><p>{project.desc}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.live && <a className="text-link" href={project.live} target="_blank" rel="noopener noreferrer">Visit live project <Arrow /></a>}{project.repository && <a className="text-link" href={project.repository} target="_blank" rel="noopener noreferrer">View GitHub repository <Arrow /></a>}{!project.live && !project.repository && <span className="private-note">{index < 2 ? "Client production system · private access" : "Project details available on request"}</span>}</div></article>)}</div>
+          <button className="button secondary all-projects" onClick={() => setShowAll(!showAll)} aria-expanded={showAll}>{showAll ? "Show selected projects −" : `View all ${projects.length} projects +`}</button>
+        </div></section>
+        <section className="section container" id="skills-library">
+          <div className="section-heading"><div><p className="eyebrow">OPEN SOURCE / REUSABLE INTELLIGENCE</p><h2>Build once.<br /><span>Put the knowledge to work.</span></h2></div><p>Reusable skills and developer resources from my GitHub. Explore the instructions, supporting code and workflows behind the systems.</p></div>
+          <div className="project-grid">{openSource.map(item => <article className="project-card" key={item.repo}><div className="project-body"><p className="eyebrow">{item.label}</p><h3>{item.name}</h3><p>{item.text}</p><div className="tags">{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div><a className="text-link" href={`https://github.com/NaveedTechLab/${item.repo}`} target="_blank" rel="noopener noreferrer">Explore repository <Arrow /></a></div></article>)}</div>
+        </section>
+        <section className="section container" id="engineering"><div className="section-heading"><div><p className="eyebrow">03 / AGENT ENGINEERING LAB</p><h2>Reliability is<br />an engineering practice.</h2></div><p>44 self-built, self-tested practice projects across five public repositories. Part of the GIAIC Final Marathon agentic AI engineering track at Panaversity.</p></div><div className="track-list">{tracks.map((track,index) => <a key={track.name} href={`https://github.com/NaveedTechLab/${track.repo}`} target="_blank" rel="noopener noreferrer"><span className="track-index">0{index+1}</span><h3>{track.name}</h3><p>{track.text}</p><span className="track-count">{track.count} projects</span><Arrow /></a>)}</div></section>
+        <section className="section container experience-section" id="experience"><div className="section-heading"><div><p className="eyebrow">04 / THE JOURNEY</p><h2>Experience that<br />ships into production.</h2></div><p>Direct stakeholder collaboration, hands-on debugging and ownership from the first requirement to daily operations.</p></div><div className="experience-list">{experience.slice(0,3).map(item => <article key={item.title}><div><p className="eyebrow">{item.period}</p><span>{item.org}</span></div><div><h3>{item.title}</h3><p>{item.desc}</p></div></article>)}</div><details className="tech-details"><summary>Earlier professional experience <span>+</span></summary><div className="toolkit">{experience.slice(3).map(item => <div key={item.title}><h3>{item.title}</h3><p>{item.org} · {item.period}</p><p>{item.desc}</p></div>)}</div></details></section>
+        <section className="section container" id="credentials"><div className="section-heading"><div><p className="eyebrow">05 / ALWAYS LEARNING</p><h2>A foundation.<br />And a forward direction.</h2></div><p>Continuous learning in generative AI, modern web development and the disciplines behind dependable agent systems.</p></div><div className="credentials-grid"><article className="certificate-card"><div className="card-top"><span>ANTHROPIC / 2026</span><span aria-hidden="true">✳</span></div><div><p>CERTIFICATE OF COMPLETION</p><h3>Claude 101</h3><span>Muhammad Naveed</span></div><a className="text-link" href="/Claude_101_Certificate.pdf" target="_blank" rel="noopener noreferrer">View original certificate <Arrow /></a></article><div className="education-list"><article><span>2023 — PRESENT</span><h3>Governor House Initiative</h3><p>Generative AI, Web3 &amp; Metaverse</p></article><article><span>IN PROGRESS / 2026</span><h3>GIAIC Final Marathon · Panaversity</h3><p>Agentic AI Engineering Track</p></article><article><span>FOUNDATIONAL EDUCATION</span><h3>Computer &amp; Information Technology</h3><p>Diploma in Computer IT (DCIT) · Certificate in IT (CIT)</p></article></div></div><div className="cv-panel"><div><p className="eyebrow">THE FULL PICTURE</p><h3>Explore my experience and engineering work.</h3></div><div><a className="button secondary" href="/Muhammad_Naveed_CV_AI_Agent_Engineer.pdf" download>AI Agent Engineer CV ↓</a></div></div></section>
+        <section className="contact-section" id="contact"><div className="container"><p className="eyebrow"><span className="status-dot" /> LET&apos;S BUILD SOMETHING USEFUL</p><h2>Your next challenge.<br /><span>Our next conversation.</span></h2><a className="contact-email" href="mailto:qureshinaveed21@hotmail.com">qureshinaveed21@hotmail.com <Arrow /></a><div className="contact-bottom"><p>Karachi, Pakistan · Remote worldwide<br />English (fluent) · Urdu (native)</p><div><a href="https://wa.me/923003627458" target="_blank" rel="noopener noreferrer">WhatsApp <Arrow /></a><a href="https://linkedin.com/in/naveedtechlab" target="_blank" rel="noopener noreferrer">LinkedIn <Arrow /></a><a href="https://github.com/naveedtechlab" target="_blank" rel="noopener noreferrer">GitHub <Arrow /></a></div></div><p className="alternate-email">Alternate email: <a href="mailto:qureshinaveed21@gmail.com">qureshinaveed21@gmail.com</a></p></div></section>
+      </main>
+      <footer className="container footer"><a className="brand" href="#">NAVEEDTECHLAB<span className="accent">.</span></a><span>© {new Date().getFullYear()} Muhammad Naveed</span><a href="#about">Back to top ↑</a></footer>
+      <ChatBot dark={true} /><WhatsApp />
     </div>
   );
 }

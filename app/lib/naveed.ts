@@ -65,12 +65,37 @@ Architecture: Event-driven & spec-driven design, fuzzy matching/alias resolution
 rate-limit-safe read pipelines, technician-scoped data validation
 
 === PROJECTS & HACKATHONS ===
-- Autonomous AI Marketing Agency (Hackathon 2024) — live on Hugging Face Spaces.
+The original live demo links are available for all projects that had them, except CRM Digital FTE, Course Companion FTE and Todo App Phase 5. Those three live links were removed at the owner's request. Course Companion and Todo link to their GitHub repositories. Only offer URLs present on the page; do not guarantee external demos are currently working.
+- Autonomous AI Marketing Agency (Hackathon 2024) — AI-powered campaign strategy, content generation and outreach.
 - Personal AI Employee / Digital FTE (Hackathon 2024) — Gmail/WhatsApp automation, Obsidian memory, MCP tools, 24/7.
 - Customer Success FTE / CRM Agent (Hackathon 2024) — multi-channel Gmail/WhatsApp/web, PostgreSQL tickets, FastAPI.
 - Cloud-Native Microservices (2024) — reusable agent skills, Docker/Kafka/Dapr/Kubernetes.
-- Plus live apps: Course Companion FTE, Todo App Phase 5, LearnFlow, AI Native Textbook, E-Commerce Store, and
+- Other projects: Course Companion FTE, Todo App Phase 5, LearnFlow, AI Native Textbook, E-Commerce Store, and
   several Streamlit tools (Library Manager, Unit Converter, Secure Data Vault, Password Strength Meter).
+
+=== OPEN SOURCE & SKILLS LIBRARY ===
+AI Skills Library: https://github.com/NaveedTechLab/skills-library — 104+ reusable skills for agents, development, cloud, automation, education and testing.
+Custom engineering skills: https://github.com/NaveedTechLab/Naveed-Tech-Lab_Skills.
+Developer guide: https://github.com/NaveedTechLab/Spec-Kit-Plus-Driven-Development--SpecKit.
+Project source: Course Companion FTE — https://github.com/NaveedTechLab/Hackathon-4-Course-Companion-FTE-.
+Todo App Phase 5 — https://github.com/NaveedTechLab/hackathon-2-todo.
+Personal AI Employee — https://github.com/NaveedTechLab/Personal-AI-Employee-hackathon-0-.
+These are GitHub source repositories, not live demo URLs. The exact CRM repository is not confirmed; do not invent a URL.
+=== AGENT ENGINEERING PRACTICE ===
+44 self-built, self-tested practice projects across five GitHub repositories:
+Loop Engineering (12): scheduled autonomy, stopping conditions and maker-checker verification.
+Harness Engineering (8): permission guardrails, typed outputs and prompt-injection defense.
+Graph Engineering (8): shared agent memory, provenance and grounded fact-checking.
+Trusting the Checker (8): golden-set testing, judge calibration and regression gates.
+Leaving the Laptop (8): headless deployment, unattended scheduling and credential hardening.
+Repositories: github.com/NaveedTechLab/ followed by Loop-Engineering-Projects,
+Harness-Engineering-Projects, Graph-Engineering-Projects, Trusting-the-Checker-Projects,
+and Leaving-the-Laptop-Projects. These are practice projects, separate from client production systems.
+
+=== CERTIFICATION ===
+Claude 101, Anthropic, certificate of completion (2026). Original PDF: /Claude_101_Certificate.pdf.
+CV download: /Muhammad_Naveed_CV_AI_Agent_Engineer.pdf.
+Primary email: qureshinaveed21@hotmail.com. Alternate email in entry-level CV: qureshinaveed21@gmail.com.
 
 === EDUCATION ===
 Governor House Initiative — GenAI, Web3 & Metaverse (2023–Present).
@@ -84,6 +109,12 @@ Open to collaborations, freelance projects, and full-time opportunities. Best co
 type Rule = { keys: string[]; answer: string };
 
 const RULES: Rule[] = [
+  { keys: ["skills library", "skill library", "open source", "reusable", "104"], answer: "Naveed's AI Skills Library includes 104+ reusable skills: https://github.com/NaveedTechLab/skills-library. The Skills Library section also links his custom engineering skills and SpecKit+ development guide." },
+  { keys: ["course companion"], answer: "Course Companion FTE is an AI tutoring project with deterministic backend logic and skills-based architecture. Source: https://github.com/NaveedTechLab/Hackathon-4-Course-Companion-FTE-." },
+  { keys: ["todo"], answer: "Todo App Phase 5 evolved from a console app into a full-stack application with an AI chatbot and cloud-native deployment. Source: https://github.com/NaveedTechLab/hackathon-2-todo." },
+  { keys: ["certificate", "certification", "claude 101"], answer: "Naveed completed Claude 101 by Anthropic in 2026. View the original certificate in the Credentials section. His AI Agent Engineer CV is available there too." },
+  { keys: ["loop", "harness", "graph engineering", "checker", "laptop", "44", "practice"], answer: "Naveed built and tested 44 practice projects across five public repositories: Loop Engineering (12), Harness Engineering (8), Graph Engineering (8), Trusting the Checker (8), and Leaving the Laptop (8). They cover autonomy, guardrails, shared memory, evaluations and unattended deployment. Explore the Agent Engineering Lab section for repository links." },
+  { keys: ["resume", "cv", "download"], answer: "The AI Agent Engineer CV is available to download in the Credentials section." },
   { keys: ["contact", "email", "reach", "hire", "available", "phone", "number"],
     answer: "You can reach Muhammad Naveed at qureshinaveed21@hotmail.com or +92 300 3627458. He's open to freelance projects, collaborations, and full-time roles. Connect on GitHub (github.com/naveedtechlab) or LinkedIn (linkedin.com/in/naveedtechlab)." },
   { keys: ["current", "job", "activus", "heat wave", "pest", "forward", "now working", "kaam"],
@@ -91,7 +122,7 @@ const RULES: Rule[] = [
   { keys: ["skill", "tech", "stack", "language", "framework", "tools", "know"],
     answer: "Naveed works across Node.js, Python, FastAPI, Express, Next.js, React & TypeScript; AI/LLM tools like OpenAI, Anthropic (Claude), Gemini, LangChain, OpenRouter, Agents SDK & MCP; integrations with Slack, Google Sheets/Calendar/Gmail, Twilio; and cloud/DevOps with Railway, Docker, Kubernetes, Kafka & Dapr." },
   { keys: ["project", "built", "portfolio", "work", "app", "made"],
-    answer: "Highlights: a production Slack/Google Automation Suite & live Operations Dashboard for a U.S. pest-control company, plus hackathon builds like an Autonomous AI Marketing Agency, a Personal AI Employee (Digital FTE), and a CRM support agent. Scroll to the Projects section to see live demos." },
+    answer: "Highlights: a production Slack/Google Automation Suite & live Operations Dashboard for a U.S. pest-control company, plus hackathon builds like an Autonomous AI Marketing Agency, a Personal AI Employee (Digital FTE), and a CRM support agent. Scroll to the Projects section for details and available demo links." },
   { keys: ["agency", "naveedtechlab", "founder", "business", "client"],
     answer: "Naveed founded NaveedTechLab, a digital agency (2025–Present) serving local Karachi businesses — first clients were CCTV World Karachi and Ha-Aeen Dentistry — delivering digital transformation roadmaps, automation, and customer-acquisition systems." },
   { keys: ["education", "study", "degree", "governor", "school", "dcit", "cit", "learn"],
