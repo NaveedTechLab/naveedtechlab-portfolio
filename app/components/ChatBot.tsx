@@ -60,7 +60,7 @@ export default function ChatBot({ dark }: { dark: boolean }) {
     }
   };
 
-  const panelBg = dark ? "bg-[#111a33] border-white/10" : "bg-white border-slate-200";
+  const panelBg = dark ? "bg-[#271020] border-white/10" : "bg-white border-slate-200";
   const botBubble = dark ? "bg-white/8 text-slate-100" : "bg-slate-100 text-slate-800";
   const inputBg = dark
     ? "bg-white/5 border-white/10 text-white placeholder:text-slate-500"
@@ -72,7 +72,7 @@ export default function ChatBot({ dark }: { dark: boolean }) {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open AI chat"
-        className="fixed bottom-24 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-2xl shadow-violet-500/30 flex items-center justify-center text-2xl transition-transform duration-200 hover:scale-110 active:scale-95"
+        className="fixed bottom-24 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-2xl shadow-rose-500/30 flex items-center justify-center text-2xl transition-transform duration-200 hover:scale-110 active:scale-95"
       >
         {open ? "✕" : "🤖"}
       </button>
@@ -83,7 +83,7 @@ export default function ChatBot({ dark }: { dark: boolean }) {
           className={`fixed bottom-40 right-5 z-[60] w-[calc(100vw-2.5rem)] sm:w-96 h-[68vh] sm:h-[500px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden animate-fade-up ${panelBg}`}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 flex items-center gap-3 flex-shrink-0">
+          <div className="bg-gradient-to-r from-pink-500 to-rose-500 px-4 py-3 flex items-center gap-3 flex-shrink-0">
             <div className="w-9 h-9 rounded-full bg-black/15 flex items-center justify-center text-lg">
               🤖
             </div>
@@ -100,7 +100,7 @@ export default function ChatBot({ dark }: { dark: boolean }) {
                 key={i}
                 className={`max-w-[85%] text-sm leading-relaxed px-3.5 py-2.5 rounded-2xl ${
                   m.role === "user"
-                    ? "self-end bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-br-sm"
+                    ? "self-end bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-br-sm"
                     : `self-start rounded-bl-sm ${botBubble}`
                 }`}
               >
@@ -125,7 +125,7 @@ export default function ChatBot({ dark }: { dark: boolean }) {
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className={`text-xs px-3 py-1.5 rounded-full border transition-colors hover:border-violet-400 hover:text-violet-400 ${
+                    className={`text-xs px-3 py-1.5 rounded-full border transition-colors hover:border-pink-400 hover:text-pink-400 ${
                       dark ? "border-white/15 text-slate-300" : "border-slate-300 text-slate-600"
                     }`}
                   >
@@ -151,12 +151,12 @@ export default function ChatBot({ dark }: { dark: boolean }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about Naveed…"
-              className={`flex-1 text-sm rounded-full border px-4 py-2.5 outline-none focus:border-violet-400 transition-colors ${inputBg}`}
+              className={`flex-1 text-sm rounded-full border px-4 py-2.5 outline-none focus:border-pink-400 transition-colors ${inputBg}`}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
             >
               ➤
             </button>
