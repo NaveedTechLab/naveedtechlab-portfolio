@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import ChatBot from "./components/ChatBot";
 import WhatsApp from "./components/WhatsApp";
+import Starfield from "./components/Starfield";
+import SceneMotion from "./components/SceneMotion";
 import { projects as allProjects, experience, skills } from "./lib/portfolio-data";
 
 const projectRepositories: Record<string, string> = {
@@ -38,6 +40,7 @@ export default function Portfolio() {
   const [showAll, setShowAll] = useState(false);
   return (
     <div className="portfolio">
+      <Starfield /><SceneMotion />
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <a className="brand" href="#" aria-label="NaveedTechLab home"><span className="brand-mark">n<span>.</span></span><span>NAVEED<span className="brand-light">TECHLAB</span></span></a>
@@ -48,6 +51,7 @@ export default function Portfolio() {
         </nav>
       </header>
       <main id="main">
+        <div className="cinematic-intro"><div className="cinematic-sticky"><div className="scene-caption" aria-hidden="true">NAVEEDTECHLAB <span>AI · AUTOMATION · ENGINEERING</span></div><a className="scene-skip" href="#about">Explore portfolio ↓</a><div className="scroll-cue" aria-hidden="true">SCROLL TO EXPLORE<span /></div><div className="scene-progress" aria-hidden="true"><i /></div></div></div>
         <section className="hero container" id="about">
           <div className="hero-copy">
             <p className="eyebrow"><span className="status-dot" /> AI AGENT ENGINEER · KARACHI, PAKISTAN</p>
