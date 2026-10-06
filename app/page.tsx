@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatBot from "./components/ChatBot";
 import WhatsApp from "./components/WhatsApp";
-import Starfield from "./components/Starfield";
-import SceneMotion from "./components/SceneMotion";
+
+
+import ProfileMotion from "./components/ProfileMotion";
+import AnimatedCursor from "./components/AnimatedCursor";
 import { projects as allProjects, experience, skills } from "./lib/portfolio-data";
 
 const projectRepositories: Record<string, string> = {
@@ -38,9 +40,18 @@ function Arrow() { return <span aria-hidden="true">↗</span>; }
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  useEffect(() => {
+    const update = () => document.documentElement.style.setProperty("--reading-progress", String(Math.max(0, Math.min(1, window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)))));
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const observer = new ResizeObserver(update); observer.observe(document.body);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); observer.disconnect(); };
+  }, []);
   return (
     <div className="portfolio">
-      <Starfield /><SceneMotion />
+      <AnimatedCursor />
+      
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <a className="brand" href="#" aria-label="NaveedTechLab home"><span className="brand-mark">n<span>.</span></span><span>NAVEED<span className="brand-light">TECHLAB</span></span></a>
@@ -49,9 +60,10 @@ export default function Portfolio() {
           {links.map(link => <a key={link} href={`#${link.toLowerCase().replace(/ /g, "-")}`} onClick={() => setMenuOpen(false)}>{link}</a>)}
           <a className="nav-contact" href="#contact" onClick={() => setMenuOpen(false)}>Let&apos;s talk <Arrow /></a>
         </nav>
+        <div className="header-scroll-progress" aria-hidden="true"><i /></div>
       </header>
       <main id="main">
-        <div className="cinematic-intro"><div className="cinematic-sticky"><div className="scene-caption" aria-hidden="true">NAVEEDTECHLAB <span>AI · AUTOMATION · ENGINEERING</span></div><a className="scene-skip" href="#about">Explore portfolio ↓</a><div className="scroll-cue" aria-hidden="true">SCROLL TO EXPLORE<span /></div><div className="scene-progress" aria-hidden="true"><i /></div></div></div>
+        <div className="cinematic-intro"><div className="cinematic-sticky"><ProfileMotion /><div className="scene-caption" aria-hidden="true">NAVEEDTECHLAB <span>AI · AUTOMATION · ENGINEERING</span></div><a className="scene-skip" href="#about">Explore portfolio ↓</a><div className="scroll-cue" aria-hidden="true">SCROLL TO EXPLORE<span /></div><h2 className="scene-title">Engineering<br />the next frontier.<span>MUHAMMAD NAVEED / AI AGENT ENGINEER</span></h2><div className="scene-coordinate" aria-hidden="true">01 / SYSTEM CORE<br />AI · AUTOMATION · FULL STACK</div><div className="scene-progress" aria-hidden="true"><i /></div></div></div>
         <section className="hero container" id="about">
           <div className="hero-copy">
             <p className="eyebrow"><span className="status-dot" /> AI AGENT ENGINEER · KARACHI, PAKISTAN</p>
