@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-const COUNT = 240;
+const COUNT = 300;
 export default function ProfileMotion() {
  const canvas = useRef<HTMLCanvasElement>(null);
  useEffect(() => {
@@ -23,7 +23,7 @@ export default function ProfileMotion() {
    context.drawImage(image,(width-dw)*.53,(height-dh)*.5,dw,dh);
    painted=index;surface.dataset.frame=String(index+1);
   };
-  const load=(index:number)=>{if(index<0||index>=COUNT||frames[index]||pending.has(index))return Promise.resolve();pending.add(index);return new Promise<void>(resolve=>{const image=new window.Image();image.decoding="async";image.onload=async()=>{try{await image.decode();}catch{}if(alive){frames[index]=image;pending.delete(index);painted=-1;paint();}resolve();};image.onerror=()=>{pending.delete(index);resolve();};image.src=`/portrait-frames/ezgif-frame-${String(index+1).padStart(3,"0")}.jpg`;});};
+  const load=(index:number)=>{if(index<0||index>=COUNT||frames[index]||pending.has(index))return Promise.resolve();pending.add(index);return new Promise<void>(resolve=>{const image=new window.Image();image.decoding="async";image.onload=async()=>{try{await image.decode();}catch{}if(alive){frames[index]=image;pending.delete(index);painted=-1;paint();}resolve();};image.onerror=()=>{pending.delete(index);resolve();};image.src=`/portrait-frames/ezgif-frame-${String(index+1).padStart(3,"0")}.jpg?v=emerald-20261007`;});};
   const tick=(now:number)=>{animation=0;if(!alive)return;const dt=Math.min(50,now-last||16);last=now;current+= (target-current)*(1-Math.exp(-dt/85));if(Math.abs(target-current)<.03)current=target;void load(Math.round(current));stage?.style.setProperty("--scene-progress",String(current/(COUNT-1)));paint();if(current!==target)animation=requestAnimationFrame(tick);};
   const scroll=()=>{const top=stage?.offsetTop??0;const range=Math.max(1,(stage?.offsetHeight??innerHeight)-innerHeight);target=reduced.matches?0:Math.max(0,Math.min(1,(scrollY-top)/range))*(COUNT-1);void load(Math.round(target));if(!animation){last=performance.now();animation=requestAnimationFrame(tick);}};
   const resize=()=>{width=innerWidth;height=innerHeight;const ratio=Math.min(devicePixelRatio||1,1.5);surface.width=Math.round(width*ratio);surface.height=Math.round(height*ratio);context.setTransform(ratio,0,0,ratio,0,0);painted=-1;paint();scroll();};
