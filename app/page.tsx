@@ -41,6 +41,44 @@ export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const panels = new Set<HTMLElement>();
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("scene-visible");
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
+    const discover = () => {
+      document.querySelectorAll<HTMLElement>(".hero-copy,.hero-visual,.stats>div,.section-heading,.service-card,.project-card,.track-list>a,.experience-list article,.credentials-grid,.cv-panel,.contact-section>.container").forEach((panel, i) => {
+        if (panels.has(panel)) return;
+        panels.add(panel);
+        if (!reduced.matches) {
+          panel.classList.add("scene-reveal");
+          panel.style.setProperty("--reveal-delay", `${i % 3 * 60}ms`);
+          observer.observe(panel);
+        }
+      });
+    };
+    const preference = () => {
+      observer.disconnect();
+      panels.forEach(panel => panel.classList.remove("scene-reveal", "scene-visible"));
+      panels.clear();
+      discover();
+    };
+    discover();
+    const mutations = new MutationObserver(discover);
+    mutations.observe(document.querySelector("main")!, { childList: true, subtree: true });
+    reduced.addEventListener("change", preference);
+    return () => {
+      observer.disconnect(); mutations.disconnect();
+      reduced.removeEventListener("change", preference);
+      panels.forEach(panel => panel.classList.remove("scene-reveal", "scene-visible"));
+    };
+  }, []);
+  useEffect(() => {
     const update = () => document.documentElement.style.setProperty("--reading-progress", String(Math.max(0, Math.min(1, window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)))));
     update();
     window.addEventListener("scroll", update, { passive: true });
